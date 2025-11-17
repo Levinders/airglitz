@@ -126,6 +126,26 @@ tr:hover td{background:#fbfdff}
   position:fixed;top:0;left:0;height:3px;width:0%;
   background:var(--primary);z-index:9999;transition:width .35s ease;
 }
+
+
+  /* ======================================================
+   PDF Download Button Styling – copied from cleaner-invoices
+   Ensures the PDF button looks consistent across pages
+   ====================================================== */
+.btn {
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  font-size:13px;
+}
+.btn.download { 
+  background:var(--primary); 
+  color:#fff; 
+}
+
+  
 </style>
 </head>
 
@@ -316,10 +336,18 @@ return `
     <td><span class="badge ${cls}">${p.Status}</span></td>
     <td>${new Date(p["Requested At"]).toLocaleDateString()}</td>
     <td>
-      ${p["PDF URL"] 
-        ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}', '_blank')">Download</button>`
-        : `<span style="color:var(--muted);font-size:12px;">No PDF</span>`
-      }
+/* --------------------------------------------------------------
+   PDF Column – Desktop View
+   Uses same UI as cleaner-invoices page ("PDF" button)
+   -------------------------------------------------------------- */
+${p["PDF URL"] 
+  ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}','_blank')">PDF</button>`
+  : `<span style="color:var(--muted);font-size:12px;">No PDF</span>`
+}
+
+
+
+
     </td>
   </tr>
 `;
@@ -347,7 +375,10 @@ return `
     <div class="mp-row">
       <span class="mp-label">PDF:</span>
       ${p["PDF URL"]
-        ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}', '_blank')" style="padding:6px 10px;font-size:12px;">Download</button>`
+        ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}','_blank')" style="padding:6px 10px;font-size:12px;">
+  PDF
+</button>
+`
         : `<span style="color:var(--muted);font-size:12px;">No PDF</span>`
       }
     </div>
