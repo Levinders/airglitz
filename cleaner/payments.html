@@ -336,18 +336,10 @@ return `
     <td><span class="badge ${cls}">${p.Status}</span></td>
     <td>${new Date(p["Requested At"]).toLocaleDateString()}</td>
     <td>
-/* --------------------------------------------------------------
-   PDF Column – Desktop View
-   Uses same UI as cleaner-invoices page ("PDF" button)
-   -------------------------------------------------------------- */
 ${p["PDF URL"] 
   ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}','_blank')">PDF</button>`
   : `<span style="color:var(--muted);font-size:12px;">No PDF</span>`
 }
-
-
-
-
     </td>
   </tr>
 `;
