@@ -337,8 +337,8 @@ return `
     <td>${new Date(p["Requested At"]).toLocaleDateString()}</td>
     <td>
 ${p["PDF URL"] 
-  ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}','_blank')">PDF</button>`
-  : `<span style="color:var(--muted);font-size:12px;">No PDF</span>`
+  ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}','_blank')">Download</button>`
+  : `<span style="color:var(--muted);font-size:12px;">No Download</span>`
 }
     </td>
   </tr>
@@ -365,10 +365,10 @@ return `
     <div class="mp-row"><span class="mp-label">Status:</span> <span class="badge ${cls}">${p.Status}</span></div>
     <div class="mp-row"><span class="mp-label">Requested:</span> ${new Date(p["Requested At"]).toLocaleDateString()}</div>
     <div class="mp-row">
-      <span class="mp-label">PDF:</span>
+      <span class="mp-label"></span>
       ${p["PDF URL"]
         ? `<button class="btn download" onclick="window.open('${p["PDF URL"]}','_blank')" style="padding:6px 10px;font-size:12px;">
-  PDF
+  Download
 </button>
 `
         : `<span style="color:var(--muted);font-size:12px;">No PDF</span>`
