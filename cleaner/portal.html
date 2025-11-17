@@ -914,10 +914,15 @@ const json = await fetchApi({
       return;
     }
     if (json.newToken) { token = json.newToken; localStorage.setItem(tokenKey, token); }
+
+    CURRENT.Status = newStatus;
     showToast('Saved', {duration:1800});
     // reload tasks (server source of truth)
-    setTimeout(loadTasks, 500);
-    closeDrawer();
+setTimeout(async () => {
+  await loadTasks();   // fetch fresh tasks
+  renderJobs(JOBS);    // re-render UI with updated statuses
+  closeDrawer();       // now close drawer
+}, 300);
   } catch (err) {
     console.error(err);
     showToast('Network error — could not save', {duration:3500});
