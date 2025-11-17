@@ -836,8 +836,38 @@ function openDrawer(bookingId) {
   });
   CURRENT._newStatus = row['Status'] || 'Pending';
 
-  setPaymentEnabled((row['Status'] || '') === 'Completed');
+/* ============================================================
+   Payment permission logic
+   - Only enabled when Completed
+   - Disabled if payment was already requested once
+   ============================================================ */
+const isCompleted = (row['Status'] || '') === 'Completed';
+const alreadyRequested = 
+  row['Payment Status'] === 'Pending' ||
+  row['Payment Status'] === 'Approved' ||
+  row['Payment Status'] === 'Paid';
 
+if (isCompleted && !alreadyRequested) {
+  setPaymentEnabled(true);
+} else {
+  setPaymentEnabled(false);
+
+  if (alreadyRequested) {
+    btnRequestPayment.classList.add("disabled");
+    btnRequestPayment.setAttribute("data-tip", "Payment already requested");
+  }
+}
+
+  /* ============================================================
+   When job is Completed → Only Request Payment should show
+   ============================================================ */
+if (isCompleted) {
+  btnSaveStatus.classList.add("disabled");
+} else {
+  btnSaveStatus.classList.remove("disabled");
+}
+
+  
   drawer.classList.add('open');
   drawer.setAttribute('aria-hidden','false');
 
@@ -936,11 +966,29 @@ setTimeout(async () => {
    Request payment action (ONLY when Completed)
    --------------------------- */
 btnRequestPayment.addEventListener('click', async () => {
-  if (!CURRENT) return;
-  if ((CURRENT._newStatus || CURRENT['Status'] || '') !== 'Completed') {
-    showToast('You can only request payment after marking the job as Completed.', {duration:4000});
-    return;
-  }
+if (!CURRENT) return;
+
+/* ============================================================
+   Double-request protection
+   ============================================================ */
+const alreadyRequested = 
+  CURRENT['Payment Status'] === 'Pending' ||
+  CURRENT['Payment Status'] === 'Approved' ||
+  CURRENT['Payment Status'] === 'Paid';
+
+if (alreadyRequested) {
+  showToast('Payment already requested for this job.', { duration: 3500 });
+  return;
+}
+
+/* ============================================================
+   Must be completed to request payment
+   ============================================================ */
+if ((CURRENT._newStatus || CURRENT['Status'] || '') !== 'Completed') {
+  showToast('You can only request payment after marking the job as Completed.', {duration:4000});
+  return;
+}
+
   const amountRaw = dwRequestAmount.value.trim();
   if (!amountRaw || isNaN(Number(amountRaw))) {
     showToast('Enter a valid amount', {duration:2800});
@@ -959,6 +1007,10 @@ btnRequestPayment.addEventListener('click', async () => {
     }
     if (json.newToken) { token = json.newToken; localStorage.setItem(tokenKey, token); }
     showToast('Request sent — admin will review', {duration:3500});
+    // update CURRENT + disable button instantly
+CURRENT['Payment Status'] = 'Pending';
+btnRequestPayment.classList.add('disabled');
+
     setTimeout(loadTasks, 700);
     closeDrawer();
   } catch (err) {
