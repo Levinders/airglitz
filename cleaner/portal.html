@@ -843,10 +843,12 @@ function openDrawer(bookingId) {
    - Disabled if payment was already requested once
    ============================================================ */
 const isCompleted = (row['Status'] || '') === 'Completed';
-const alreadyRequested = 
-  row['Payment Status'] === 'Pending' ||
-  row['Payment Status'] === 'Approved' ||
-  row['Payment Status'] === 'Paid';
+const statusRaw = (row['Payment Status'] || '').trim().toLowerCase();
+const alreadyRequested =
+  statusRaw === 'pending' ||
+  statusRaw === 'approved' ||
+  statusRaw === 'paid';
+
 
 if (isCompleted && !alreadyRequested) {
   setPaymentEnabled(true);
@@ -905,7 +907,7 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     document.querySelectorAll('.status-badge[data-status]').forEach(b => b.style.opacity = 0.45);
     btn.style.opacity = 1;
     if (CURRENT) {
-      CURRENT._newStatus = btn.getAttribute('data-status');
+      CURRENT._newStatus = btn.getAttribute('data-status') || CURRENT['Status'];
 /* Final status selection should respect the "already requested" lock */
 const alreadyRequested =
   CURRENT['Payment Status'] === 'Pending' ||
