@@ -889,14 +889,13 @@ function closeDrawer() {
 function setPaymentEnabled(enabled) {
   if (enabled) {
     dwRequestAmount.removeAttribute('disabled');
-    // DO NOT re-enable the button — keep it permanently disabled
-    btnRequestPayment.classList.remove('disabled'); 
-
+    btnRequestPayment.classList.remove('disabled');
   } else {
-    dwRequestAmount.setAttribute('disabled','true');
+    dwRequestAmount.setAttribute('disabled', 'true');
     btnRequestPayment.classList.add('disabled');
   }
 }
+
 
 /* ---------------------------
    Status click handlers (in drawer)
