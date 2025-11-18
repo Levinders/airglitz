@@ -396,7 +396,8 @@
   bookingMenu.onclick = (e) => { e.preventDefault(); bookingItem.classList.toggle('open'); };
 
   // ===== API base (use your current deployed Web App URL via corsproxy) =====
-    const scriptBaseURL = "https://homeglitz.raphaellevinders.workers.dev/"; // <- keep as-is or update
+const scriptBaseURL =
+    "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbx04byXSnZH_gzI2J7OQRCQzY3U40KmNmSKgydU-AbhI8zZSjgXOlZdspMXYoMzzJVM/exec");
 
   // ===== Slim toast + loader (UI-neutral) =====
   const toast = document.createElement('div');
