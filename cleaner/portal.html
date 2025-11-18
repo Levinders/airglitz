@@ -909,10 +909,12 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     if (CURRENT) {
       CURRENT._newStatus = btn.getAttribute('data-status') || CURRENT['Status'];
 /* Final status selection should respect the "already requested" lock */
+const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
 const alreadyRequested =
-  CURRENT['Payment Status'] === 'Pending' ||
-  CURRENT['Payment Status'] === 'Approved' ||
-  CURRENT['Payment Status'] === 'Paid';
+  statusRaw === 'pending' ||
+  statusRaw === 'approved' ||
+  statusRaw === 'paid';
+
 
 if (CURRENT._newStatus === 'Completed' && !alreadyRequested) {
   setPaymentEnabled(true);
@@ -985,10 +987,12 @@ if (!CURRENT) return;
 /* ============================================================
    Double-request protection
    ============================================================ */
-const alreadyRequested = 
-  CURRENT['Payment Status'] === 'Pending' ||
-  CURRENT['Payment Status'] === 'Approved' ||
-  CURRENT['Payment Status'] === 'Paid';
+const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
+const alreadyRequested =
+  statusRaw === 'pending' ||
+  statusRaw === 'approved' ||
+  statusRaw === 'paid';
+
 
 if (alreadyRequested) {
   showToast('Payment already requested for this job.', { duration: 3500 });
