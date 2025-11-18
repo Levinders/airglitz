@@ -888,7 +888,9 @@ function closeDrawer() {
 function setPaymentEnabled(enabled) {
   if (enabled) {
     dwRequestAmount.removeAttribute('disabled');
-    btnRequestPayment.classList.remove('disabled');
+    // DO NOT re-enable the button — keep it permanently disabled
+// btnRequestPayment.classList.remove('disabled');   <-- REMOVE THIS LINE COMPLETELY
+
   } else {
     dwRequestAmount.setAttribute('disabled','true');
     btnRequestPayment.classList.add('disabled');
@@ -904,8 +906,18 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     btn.style.opacity = 1;
     if (CURRENT) {
       CURRENT._newStatus = btn.getAttribute('data-status');
-      // enable payment only if Completed
-      setPaymentEnabled(CURRENT._newStatus === 'Completed');
+/* Final status selection should respect the "already requested" lock */
+const alreadyRequested =
+  CURRENT['Payment Status'] === 'Pending' ||
+  CURRENT['Payment Status'] === 'Approved' ||
+  CURRENT['Payment Status'] === 'Paid';
+
+if (CURRENT._newStatus === 'Completed' && !alreadyRequested) {
+  setPaymentEnabled(true);
+} else {
+  setPaymentEnabled(false);
+}
+
     }
   });
 });
@@ -1018,7 +1030,9 @@ btnRequestPayment.classList.add('disabled');
     showToast('Network error — could not send request', {duration:3500});
   } finally {
     removeSpinner(btnRequestPayment);
-    btnRequestPayment.classList.remove('disabled');
+    // DO NOT re-enable the button — keep it permanently disabled
+// btnRequestPayment.classList.remove('disabled');   <-- REMOVE THIS LINE COMPLETELY
+
   }
 });
 
