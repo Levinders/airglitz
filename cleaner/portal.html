@@ -890,7 +890,7 @@ function setPaymentEnabled(enabled) {
   if (enabled) {
     dwRequestAmount.removeAttribute('disabled');
     // DO NOT re-enable the button — keep it permanently disabled
-    btnRequestPayment.classList.remove('disabled');   <-- REMOVE THIS LINE COMPLETELY
+    btnRequestPayment.classList.remove('disabled'); 
 
   } else {
     dwRequestAmount.setAttribute('disabled','true');
