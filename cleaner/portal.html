@@ -561,6 +561,51 @@
       </div>
     </div>
 
+
+    <!-- PACKING SLIP COLLAPSIBLE -->
+<div id="dwPackingSlipWrapper" 
+     style="margin-bottom:20px; display:none;">
+
+  <!-- HEADER -->
+  <div id="dwPackingSlipHeader"
+       style="
+         display:flex;
+         justify-content:space-between;
+         align-items:center;
+         padding:12px 14px;
+         background:#f9fbff;
+         border:1px solid #e6eef8;
+         border-radius:12px;
+         cursor:pointer;
+         font-weight:700;
+         color:var(--primary);
+         user-select:none;
+       ">
+    <span><i class="fa-solid fa-box-open"></i> Packing Slip</span>
+    <i id="dwPackingSlipChevron" 
+       class="fa-solid fa-chevron-down"
+       style="transition:transform .25s ease;"></i>
+  </div>
+
+  <!-- COLLAPSIBLE BODY -->
+  <div id="dwPackingSlipBody"
+       style="
+         max-height:0;
+         overflow:hidden;
+         background:#ffffff;
+         border:1px solid #e6eef8;
+         border-top:none;
+         border-radius:0 0 12px 12px;
+         transition:max-height .28s ease;
+         padding:0 14px;
+       ">
+    <div id="dwPackingSlipContent"
+         style="padding:12px 0; font-size:14px; line-height:1.5;">
+    </div>
+  </div>
+
+</div>
+
     <!-- NOTES SECTION -->
     <div style="margin-bottom:22px;">
       <label>Notes</label>
@@ -831,6 +876,38 @@ function openDrawer(bookingId) {
   dwDate.textContent = row['Cleaning Date'] ? formatDateCell(row['Cleaning Date']) : '';
   dwNotes.value = row['Notes'] || row['Note'] || '';
   dwRequestAmount.value = row['Request Amount'] || '';
+
+  /* =====================================================
+   PACKING SLIP (Airbnb Only)
+   ===================================================== */
+const wrapper = document.getElementById('dwPackingSlipWrapper');
+const content = document.getElementById('dwPackingSlipContent');
+const body = document.getElementById('dwPackingSlipBody');
+const chev = document.getElementById('dwPackingSlipChevron');
+
+const propName = row['Property Name'] || row['Property'] || '';
+const prop = PROPERTIES.find(p => p['Property Name'] === propName);
+
+const isAirbnb = row['Property Type'] === 'airbnb' 
+              || (prop && (prop['Property Type'] || "").toLowerCase() === "airbnb");
+
+if (prop && isAirbnb) {
+  const slipHTML = buildPackingSlip(prop);
+
+  if (slipHTML) {
+    content.innerHTML = slipHTML;
+    wrapper.style.display = "block";
+
+    // collapse on open
+    body.style.maxHeight = "0px";
+    chev.style.transform = "rotate(0deg)";
+  } else {
+    wrapper.style.display = "none";
+  }
+} else {
+  wrapper.style.display = "none";
+}
+
 
   document.querySelectorAll('.status-badge[data-status]').forEach(b => {
     b.style.opacity = (b.getAttribute('data-status') === (row['Status'] || 'Pending')) ? '1' : '0.45';
@@ -1132,7 +1209,25 @@ function progressFinish() {
 
 
 
+function togglePackingSlip() {
+  const wrap = document.getElementById("dwPackingSlipWrapper");
+  const body = document.getElementById("dwPackingSlipBody");
+  const chev = document.getElementById("dwPackingSlipChevron");
 
+  if (!wrap || !body) return;
+
+  const expanded = body.style.maxHeight && body.style.maxHeight !== "0px";
+
+  if (expanded) {
+    body.style.maxHeight = "0px";
+    chev.style.transform = "rotate(0deg)";
+  } else {
+    body.style.maxHeight = body.scrollHeight + "px";
+    chev.style.transform = "rotate(180deg)";
+  }
+}
+
+document.getElementById("dwPackingSlipHeader").addEventListener("click", togglePackingSlip);
 
 </script>
 </body>
