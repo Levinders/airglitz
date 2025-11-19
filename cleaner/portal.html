@@ -837,39 +837,6 @@ function openDrawer(bookingId) {
   });
   CURRENT._newStatus = row['Status'] || 'Pending';
 
-/* ============================================================
-   Payment permission logic
-   - Only enabled when Completed
-   - Disabled if payment was already requested once
-   ============================================================ */
-const isCompleted = (row['Status'] || '') === 'Completed';
-const statusRaw = (row['Payment Status'] || '').trim().toLowerCase();
-const alreadyRequested =
-  statusRaw === 'pending' ||
-  statusRaw === 'approved' ||
-  statusRaw === 'paid';
-
-
-// Reset the field/button first
-btnRequestPayment.classList.remove("disabled");
-dwRequestAmount.removeAttribute("disabled");
-
-// Only lock if payment was already requested before
-if (alreadyRequested) {
-  setPaymentEnabled(false);
-  btnRequestPayment.setAttribute("data-tip", "Payment already requested");
-}
-
-// Only allow requesting payment when job is actually completed
-else if (isCompleted) {
-  setPaymentEnabled(true);
-}
-
-// Any other status → disable amount field ONLY (not the button)
-else {
-  dwRequestAmount.setAttribute("disabled", "true");
-  btnRequestPayment.classList.add("disabled");
-}
 
 
   /* ============================================================
@@ -919,45 +886,30 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     btn.style.opacity = 1;
     if (CURRENT) {
       CURRENT._newStatus = btn.getAttribute('data-status') || CURRENT['Status'];
-/* Final status selection should respect the "already requested" lock */
+
+      const isCompleted = CURRENT._newStatus === 'Completed';
 const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
 const alreadyRequested =
   statusRaw === 'pending' ||
   statusRaw === 'approved' ||
   statusRaw === 'paid';
 
-
-/* ============================================================
-   Payment permission logic — FINAL FIXED VERSION
-   ============================================================ */
-
-const isCompleted = (row['Status'] || '') === 'Completed';
-const statusRaw = (row['Payment Status'] || '').trim().toLowerCase();
-const alreadyRequested =
-  statusRaw === 'pending' ||
-  statusRaw === 'approved' ||
-  statusRaw === 'paid';
-
-// Reset UI first
+// Reset the UI
 btnRequestPayment.classList.remove("disabled");
 dwRequestAmount.removeAttribute("disabled");
 
-// Case A — already requested → lock everything
 if (alreadyRequested) {
   setPaymentEnabled(false);
   btnRequestPayment.setAttribute("data-tip", "Payment already requested");
 }
-
-// Case B — completed and not requested → enable
 else if (isCompleted) {
   setPaymentEnabled(true);
 }
-
-// Case C — not completed → disable amount BUT DO NOT disable the button visually
 else {
   dwRequestAmount.setAttribute("disabled", "true");
   btnRequestPayment.classList.add("disabled");
 }
+
 
 
     }
