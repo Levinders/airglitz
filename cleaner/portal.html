@@ -837,6 +837,20 @@ function openDrawer(bookingId) {
   });
   CURRENT._newStatus = row['Status'] || 'Pending';
 
+  // Enable/disable payment controls when drawer opens
+const payStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
+const payAlreadyRequested = 
+      payStatusRaw === 'pending' ||
+      payStatusRaw === 'approved' ||
+      payStatusRaw === 'paid';
+
+if (row.Status === 'Completed' && !payAlreadyRequested) {
+    setPaymentEnabled(true);
+} else {
+    setPaymentEnabled(false);
+}
+
+
 
 
   /* ============================================================
@@ -897,9 +911,6 @@ const alreadyRequested =
   statusRaw === 'approved' ||
   statusRaw === 'paid';
 
-// Reset the UI
-btnRequestPayment.classList.remove("disabled");
-dwRequestAmount.removeAttribute("disabled");
 
 if (alreadyRequested) {
   setPaymentEnabled(false);
