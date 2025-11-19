@@ -881,6 +881,10 @@ function openDrawer(bookingId) {
 /* =====================================================
    PACKING SLIP
    ===================================================== */
+const wrapper = document.getElementById('dwPackingSlipWrapper');
+const content = document.getElementById('dwPackingSlipContent');
+const body = document.getElementById('dwPackingSlipBody');
+const chev = document.getElementById('dwPackingSlipChevron');
 const propName = row['Property Name']?.trim() || row['Property']?.trim() || "";
 const prop = PROPERTIES.find(p => (p['Property Name'] || "").trim() === propName);
 
