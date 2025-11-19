@@ -837,23 +837,19 @@ function openDrawer(bookingId) {
   });
   CURRENT._newStatus = row['Status'] || 'Pending';
 
-// When drawer opens, start in a safe default state.
-// Payment will be enabled after user selects "Completed".
+// Reset payment UI
 setPaymentEnabled(false);
 
-// But if job was already completed AND not requested before → enable instantly.
-const payStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
-const payAlreadyRequested =
-      payStatusRaw === 'pending' ||
-      payStatusRaw === 'approved' ||
-      payStatusRaw === 'paid';
+const paymentStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
+const alreadyRequested =
+  paymentStatusRaw === 'pending' ||
+  paymentStatusRaw === 'approved' ||
+  paymentStatusRaw === 'paid';
 
-if (row.Status === 'Completed' && !payAlreadyRequested) {
-    setPaymentEnabled(true);
+// If job was already Completed before opening → allow request
+if (row.Status === 'Completed' && !alreadyRequested) {
+  setPaymentEnabled(true);
 }
-
-
-
 
 
   /* ============================================================
@@ -897,6 +893,7 @@ function setPaymentEnabled(enabled) {
 }
 
 
+
 /* ---------------------------
    Status click handlers (in drawer)
    --------------------------- */
@@ -905,6 +902,7 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
 
     if (!CURRENT) return;
 
+    // Visually highlight selected
     document.querySelectorAll('.status-badge[data-status]').forEach(b => b.style.opacity = 0.45);
     btn.style.opacity = 1;
 
@@ -912,18 +910,19 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     CURRENT._newStatus = newStatus;
     CURRENT.Status = newStatus;
 
-    const paymentStatusRaw = (CURRENT['Payment Status'] ?? '').toString().trim().toLowerCase();
-
+    const paymentStatusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
     const alreadyRequested =
       paymentStatusRaw === 'pending' ||
       paymentStatusRaw === 'approved' ||
       paymentStatusRaw === 'paid';
 
-    if (newStatus === 'Completed' && !alreadyRequested) {
-      setPaymentEnabled(true);
-    } else {
+    if (alreadyRequested) {
       setPaymentEnabled(false);
+      return;
     }
+
+    // Enable only when status becomes Completed
+    setPaymentEnabled(newStatus === 'Completed');
   });
 });
 
