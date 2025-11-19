@@ -927,11 +927,38 @@ const alreadyRequested =
   statusRaw === 'paid';
 
 
-if (CURRENT._newStatus === 'Completed' && !alreadyRequested) {
-  setPaymentEnabled(true);
-} else {
+/* ============================================================
+   Payment permission logic — FINAL FIXED VERSION
+   ============================================================ */
+
+const isCompleted = (row['Status'] || '') === 'Completed';
+const statusRaw = (row['Payment Status'] || '').trim().toLowerCase();
+const alreadyRequested =
+  statusRaw === 'pending' ||
+  statusRaw === 'approved' ||
+  statusRaw === 'paid';
+
+// Reset UI first
+btnRequestPayment.classList.remove("disabled");
+dwRequestAmount.removeAttribute("disabled");
+
+// Case A — already requested → lock everything
+if (alreadyRequested) {
   setPaymentEnabled(false);
+  btnRequestPayment.setAttribute("data-tip", "Payment already requested");
 }
+
+// Case B — completed and not requested → enable
+else if (isCompleted) {
+  setPaymentEnabled(true);
+}
+
+// Case C — not completed → disable amount BUT DO NOT disable the button visually
+else {
+  dwRequestAmount.setAttribute("disabled", "true");
+  btnRequestPayment.classList.add("disabled");
+}
+
 
     }
   });
@@ -1135,10 +1162,6 @@ function progressFinish() {
   // initial load
   loadTasks();
 
-  // 🔥 auto-trigger refresh button immediately
-  setTimeout(() => {
-    document.getElementById('btnRefresh').click();
-  }, 150); 
 })();
 
 
