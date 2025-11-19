@@ -850,16 +850,27 @@ const alreadyRequested =
   statusRaw === 'paid';
 
 
-if (isCompleted && !alreadyRequested) {
-  setPaymentEnabled(true);
-} else {
-  setPaymentEnabled(false);
+// Reset the field/button first
+btnRequestPayment.classList.remove("disabled");
+dwRequestAmount.removeAttribute("disabled");
 
-  if (alreadyRequested) {
-    btnRequestPayment.classList.add("disabled");
-    btnRequestPayment.setAttribute("data-tip", "Payment already requested");
-  }
+// Only lock if payment was already requested before
+if (alreadyRequested) {
+  setPaymentEnabled(false);
+  btnRequestPayment.setAttribute("data-tip", "Payment already requested");
 }
+
+// Only allow requesting payment when job is actually completed
+else if (isCompleted) {
+  setPaymentEnabled(true);
+}
+
+// Any other status → disable amount field ONLY (not the button)
+else {
+  dwRequestAmount.setAttribute("disabled", "true");
+  btnRequestPayment.classList.add("disabled");
+}
+
 
   /* ============================================================
    When job is Completed → Only Request Payment should show
