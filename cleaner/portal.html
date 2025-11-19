@@ -892,19 +892,18 @@ const prop = PROPERTIES.find(p => (p['Property Name'] || "").trim() === propName
 let hasInventory = false;
 
 if (prop) {
-  hasInventory = Object.entries(prop).some(([k, v]) => {
-    const key = k.toLowerCase();
-    return (
-      (key.includes("sheet") ||
-       key.includes("towel") ||
-       key.includes("amenity") ||
-       key.includes("toilet")) &&
-      v !== null &&
-      v !== "" &&
-      Number(v) !== 0 &&
-      v !== "0"
-    );
-  });
+hasInventory = Object.entries(prop).some(([k, v]) => {
+  const key = k.toLowerCase();
+
+  return (
+    (key.includes("sheet") || key.includes("sheets") ||
+     key.includes("towel") || key.includes("towels") ||
+     key.includes("amenity") || key.includes("amenities") ||
+     key.includes("toilet")) &&
+    Number(v) > 0
+  );
+});
+
 }
 
 if (prop && hasInventory) {
