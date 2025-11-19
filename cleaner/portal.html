@@ -902,34 +902,31 @@ function setPaymentEnabled(enabled) {
    --------------------------- */
 document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.status-badge[data-status]').forEach(b => b.style.opacity = 0.45);
-    btn.style.opacity = 1;
 
     if (!CURRENT) return;
 
-    CURRENT._newStatus = btn.getAttribute('data-status');
-    CURRENT.Status = CURRENT._newStatus;   // ⭐ IMPORTANT FIX
+    document.querySelectorAll('.status-badge[data-status]').forEach(b => b.style.opacity = 0.45);
+    btn.style.opacity = 1;
 
+    const newStatus = btn.getAttribute('data-status');
+    CURRENT._newStatus = newStatus;
+    CURRENT.Status = newStatus;
 
-    const isCompleted = CURRENT._newStatus === 'Completed';
-    const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
+    const paymentStatusRaw = (CURRENT['Payment Status'] ?? '').toString().trim().toLowerCase();
+
     const alreadyRequested =
-      statusRaw === 'pending' ||
-      statusRaw === 'approved' ||
-      statusRaw === 'paid';
+      paymentStatusRaw === 'pending' ||
+      paymentStatusRaw === 'approved' ||
+      paymentStatusRaw === 'paid';
 
-    if (alreadyRequested) {
-      setPaymentEnabled(false);
-      return;
-    }
-
-    if (isCompleted) {
+    if (newStatus === 'Completed' && !alreadyRequested) {
       setPaymentEnabled(true);
     } else {
       setPaymentEnabled(false);
     }
   });
 });
+
 
 
 /* Close drawer */
@@ -995,7 +992,7 @@ if (!CURRENT) return;
 /* ============================================================
    Double-request protection
    ============================================================ */
-const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
+const statusRaw = (CURRENT['Payment Status'] ?? '').toString().trim().toLowerCase();
 const alreadyRequested =
   statusRaw === 'pending' ||
   statusRaw === 'approved' ||
