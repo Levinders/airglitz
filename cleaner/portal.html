@@ -881,40 +881,40 @@ function openDrawer(bookingId) {
 /* =====================================================
    PACKING SLIP
    ===================================================== */
-const wrapper = document.getElementById('dwPackingSlipWrapper');
-const content = document.getElementById('dwPackingSlipContent');
-const body = document.getElementById('dwPackingSlipBody');
-const chev = document.getElementById('dwPackingSlipChevron');
+const propName = row['Property Name']?.trim() || row['Property']?.trim() || "";
+const prop = PROPERTIES.find(p => (p['Property Name'] || "").trim() === propName);
 
-const propName = row['Property Name'] || row['Property'] || '';
-const prop = PROPERTIES.find(p => p['Property Name'] === propName);
+// Detect if any meaningful inventory exists
+let hasInventory = false;
 
-// Show packing slip if property has any inventory-like fields
-const hasInventory = prop && Object.keys(prop).some(k =>
-  k.toLowerCase().includes("sheet") ||
-  k.toLowerCase().includes("towel") ||
-  k.toLowerCase().includes("amenity") ||
-  k.toLowerCase().includes("toilet")
-);
+if (prop) {
+  hasInventory = Object.entries(prop).some(([k, v]) => {
+    const key = k.toLowerCase();
+    return (
+      (key.includes("sheet") ||
+       key.includes("towel") ||
+       key.includes("amenity") ||
+       key.includes("toilet")) &&
+      v !== null &&
+      v !== "" &&
+      Number(v) !== 0 &&
+      v !== "0"
+    );
+  });
+}
 
 if (prop && hasInventory) {
+  const slipHTML = buildPackingSlip(prop);
+  content.innerHTML = slipHTML;
+  wrapper.style.display = "block";
 
-  const slipHTML = buildPackingSlip(prop);  // <-- FIXED: now defined
-
-  if (slipHTML) {
-    content.innerHTML = slipHTML;
-    wrapper.style.display = "block";
-
-    // collapse on open
-    body.style.maxHeight = "0px";
-    chev.style.transform = "rotate(0deg)";
-  } else {
-    wrapper.style.display = "none";
-  }
-
+  // collapsed at start
+  body.style.maxHeight = "0px";
+  chev.style.transform = "rotate(0deg)";
 } else {
   wrapper.style.display = "none";
 }
+
 
 
 
