@@ -842,11 +842,14 @@ function openDrawer(bookingId) {
   /* ============================================================
    When job is Completed → Only Request Payment should show
    ============================================================ */
+const isCompleted = (row['Status'] || '') === 'Completed';
+
 if (isCompleted) {
   btnSaveStatus.classList.add("disabled");
 } else {
   btnSaveStatus.classList.remove("disabled");
 }
+
 
   
   drawer.classList.add('open');
