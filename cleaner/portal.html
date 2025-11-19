@@ -878,8 +878,8 @@ function openDrawer(bookingId) {
   dwNotes.value = row['Notes'] || row['Note'] || '';
   dwRequestAmount.value = row['Request Amount'] || '';
 
-  /* =====================================================
-   PACKING SLIP (Airbnb Only)
+/* =====================================================
+   PACKING SLIP
    ===================================================== */
 const wrapper = document.getElementById('dwPackingSlipWrapper');
 const content = document.getElementById('dwPackingSlipContent');
@@ -889,11 +889,8 @@ const chev = document.getElementById('dwPackingSlipChevron');
 const propName = row['Property Name'] || row['Property'] || '';
 const prop = PROPERTIES.find(p => p['Property Name'] === propName);
 
-const isAirbnb = row['Property Type'] === 'airbnb' 
-              || (prop && (prop['Property Type'] || "").toLowerCase() === "airbnb");
-
 // Show packing slip if property has any inventory-like fields
-const hasInventory = Object.keys(prop).some(k =>
+const hasInventory = prop && Object.keys(prop).some(k =>
   k.toLowerCase().includes("sheet") ||
   k.toLowerCase().includes("towel") ||
   k.toLowerCase().includes("amenity") ||
@@ -902,6 +899,7 @@ const hasInventory = Object.keys(prop).some(k =>
 
 if (prop && hasInventory) {
 
+  const slipHTML = buildPackingSlip(prop);  // <-- FIXED: now defined
 
   if (slipHTML) {
     content.innerHTML = slipHTML;
@@ -913,9 +911,11 @@ if (prop && hasInventory) {
   } else {
     wrapper.style.display = "none";
   }
+
 } else {
   wrapper.style.display = "none";
 }
+
 
 
   document.querySelectorAll('.status-badge[data-status]').forEach(b => {
