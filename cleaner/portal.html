@@ -905,6 +905,8 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     if (!CURRENT) return;
 
     CURRENT._newStatus = btn.getAttribute('data-status');
+    CURRENT.Status = CURRENT._newStatus;   // ⭐ IMPORTANT FIX
+
 
     const isCompleted = CURRENT._newStatus === 'Completed';
     const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
