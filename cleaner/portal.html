@@ -720,6 +720,7 @@ const sideName = document.getElementById('sideName');
 const sideEmail = document.getElementById('sideEmail');
 const cleanerNameTop = document.getElementById('cleanerNameTop');
 
+let PROPERTIES = [];
 let JOBS = [];
 let CURRENT = null;
 let token = localStorage.getItem(tokenKey);
@@ -1185,6 +1186,16 @@ function progressFinish() {
   }, 500);
 }
 
+  async function loadPropertiesForPortal() {
+  try {
+    const json = await fetchApi({ action: "getAllPropertiesForPortal" });
+    PROPERTIES = json.properties || [];
+  } catch (e) {
+    console.error("Failed to load properties:", e);
+    PROPERTIES = [];
+  }
+}
+
 /* ---------------------------
    Boot / session checks
    --------------------------- */
@@ -1202,11 +1213,10 @@ function progressFinish() {
   navAvatar.textContent = (cleanerName || 'CL').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
   sideAvatar.textContent = navAvatar.textContent;
 
-  // initial load
-  loadTasks();
-
+(async function(){
+  await loadPropertiesForPortal();  // <-- IMPORTANT
+  await loadTasks();
 })();
-
 
 
 function togglePackingSlip() {
