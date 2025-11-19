@@ -901,34 +901,31 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.status-badge[data-status]').forEach(b => b.style.opacity = 0.45);
     btn.style.opacity = 1;
-    if (CURRENT) {
-      CURRENT._newStatus = btn.getAttribute('data-status') || CURRENT['Status'];
 
-      const isCompleted = CURRENT._newStatus === 'Completed';
-const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
-const alreadyRequested =
-  statusRaw === 'pending' ||
-  statusRaw === 'approved' ||
-  statusRaw === 'paid';
+    if (!CURRENT) return;
 
+    CURRENT._newStatus = btn.getAttribute('data-status');
 
-if (alreadyRequested) {
-  setPaymentEnabled(false);
-  btnRequestPayment.setAttribute("data-tip", "Payment already requested");
-}
-else if (isCompleted) {
-  setPaymentEnabled(true);
-}
-else {
-  dwRequestAmount.setAttribute("disabled", "true");
-  btnRequestPayment.classList.add("disabled");
-}
+    const isCompleted = CURRENT._newStatus === 'Completed';
+    const statusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
+    const alreadyRequested =
+      statusRaw === 'pending' ||
+      statusRaw === 'approved' ||
+      statusRaw === 'paid';
 
+    if (alreadyRequested) {
+      setPaymentEnabled(false);
+      return;
+    }
 
-
+    if (isCompleted) {
+      setPaymentEnabled(true);
+    } else {
+      setPaymentEnabled(false);
     }
   });
 });
+
 
 /* Close drawer */
 btnCloseDrawer.addEventListener('click', closeDrawer);
