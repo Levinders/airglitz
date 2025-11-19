@@ -837,18 +837,21 @@ function openDrawer(bookingId) {
   });
   CURRENT._newStatus = row['Status'] || 'Pending';
 
-  // Enable/disable payment controls when drawer opens
+// When drawer opens, start in a safe default state.
+// Payment will be enabled after user selects "Completed".
+setPaymentEnabled(false);
+
+// But if job was already completed AND not requested before → enable instantly.
 const payStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
-const payAlreadyRequested = 
+const payAlreadyRequested =
       payStatusRaw === 'pending' ||
       payStatusRaw === 'approved' ||
       payStatusRaw === 'paid';
 
 if (row.Status === 'Completed' && !payAlreadyRequested) {
     setPaymentEnabled(true);
-} else {
-    setPaymentEnabled(false);
 }
+
 
 
 
