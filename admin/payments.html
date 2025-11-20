@@ -127,6 +127,39 @@
   .drawer .head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
   .drawer .body{padding:16px;overflow:auto;max-height:70vh}
   .inline-msg{min-height:20px;color:#c0392b;font-size:13px;margin-top:8px}
+
+
+  .topbar {
+  height: 60px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  box-shadow: var(--shadow);
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  z-index: 1000;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: var(--muted);
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--primary);
+  cursor: pointer;
+}
+
 </style>
 </head>
 
@@ -165,7 +198,6 @@
   <!-- ========== topbar (unchanged) ========== -->
   <header class="topbar">
     <div class="brandline">
-      <img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/64%C3%9764pxlogo.png" style="height:36px">
     </div>
     <div style="display:flex;gap:12px;align-items:center;color:var(--muted)">
       <div class="topbar-right"><i class="fa-regular fa-bell"></i><i class="fa-regular fa-user"></i></div>
