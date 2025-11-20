@@ -63,6 +63,48 @@ body { display: flex; min-height: 100vh; background: var(--primary-light); color
 /* === MAIN === */
 main { flex: 1; margin-left: 250px; padding: 100px 40px 40px; background: var(--primary-light); }
 
+/* === Pagination Footer Fix === */
+.card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+}
+
+.page-indicator {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.pagination {
+  display: flex;
+  gap: 10px;
+}
+
+.pagination .btn {
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pagination .btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.pagination .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .card {
   background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow);
   border: 1px solid var(--border); padding: 0; overflow: hidden;
