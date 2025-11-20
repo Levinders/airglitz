@@ -466,7 +466,7 @@ bookingMenu.onclick = (e) => {
     data.forEach(c => {
       const opt = document.createElement("option");
       opt.value = c["Cleaner Name"];
-      opt.textContent = ["Cleaner Name"];
+      opt.textContent = c["Cleaner Name"];
       cleanersEl.appendChild(opt);
     });
   }
