@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HomeGlitz — Admin Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+<style>
+  body {
+    margin:0; padding:0;
+    font-family:Montserrat, sans-serif;
+    background:#f5faff;
+    display:flex; justify-content:center; align-items:center;
+    min-height:100vh;
+  }
+  .box {
+    background:#fff;
+    padding:40px 35px;
+    border-radius:16px;
+    width:380px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    border:1px solid #e4e9ef;
+  }
+  h2 {
+    text-align:center;
+    margin-bottom:25px;
+    color:#0F72B4;
+  }
+  label { font-weight:600; color:#0F72B4; }
+  input {
+    width:100%; padding:12px 14px;
+    margin-top:6px; margin-bottom:20px;
+    border:1px solid #e4e9ef; border-radius:10px;
+    font-size:15px;
+  }
+  button {
+    width:100%; padding:14px;
+    background:#0F72B4; color:#fff;
+    border:none; border-radius:10px;
+    font-size:16px; font-weight:600;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2><i class="fa-solid fa-lock"></i> Admin Login</h2>
+
+  <label>Email</label>
+  <input type="email" id="adminEmail">
+
+  <label>Password</label>
+  <input type="password" id="adminPassword">
+
+  <button onclick="adminLogin()">Login</button>
+</div>
+
+<script>
+function adminLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value.trim();
+
+  // 🔐 Your admin credentials (change as you like)
+  const ADMIN_EMAIL = "admin@homeglitz.com";
+  const ADMIN_PASSWORD = "superadmin123";
+
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    localStorage.setItem("homeglitzAdminAuth", "true");
+    window.location.href = "cleaners.html";
+  } else {
+    alert("Invalid admin credentials");
+  }
+}
+</script>
+
+</body>
+</html>
