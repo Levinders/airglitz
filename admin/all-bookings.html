@@ -479,7 +479,7 @@ async function fetchJSON(url) {
 async function loadBookings() {
   showLoader();
   try {
-    const rows = await fetchJSON(`${scriptBaseURL}?type=bookings`);
+    const rows = await fetchJSON(buildURL("?type=bookings"));
     ALL_ROWS = hydrateTypes(rows).sort(sortByMostRecent);
     applyFilters();
   } catch (e) {
@@ -684,7 +684,7 @@ if (exactDate) {
     async function updateStatus(bookingId, status, rowEl) {
       try {
         showLoader();
-        await fetch(scriptBaseURL, {
+        await fetch(buildURL(), {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ action: 'updateStatus', bookingId, status })
@@ -732,7 +732,7 @@ async function syncServerBookings() {
   if (SYNC_RUNNING) return;
   SYNC_RUNNING = true;
   try {
-    await fetch(scriptBaseURL, {
+    await fetch(buildURL(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'syncAllBookings' })
@@ -889,7 +889,7 @@ function toDateInput(v) {
 
       try {
         showLoader();
-        await fetch(scriptBaseURL, {
+        await fetch(buildURL(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
