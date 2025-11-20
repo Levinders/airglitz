@@ -374,17 +374,8 @@
     function showLoader(){ loader.classList.add('active'); }
     function hideLoader(){ loader.classList.remove('active'); }
 
-
-function buildURL(params = "") {
-  return (
-    "https://homeglitz.raphaellevinders.workers.dev/?url=" +
-    encodeURIComponent(
-      "https://script.google.com/macros/s/AKfycbzmj1rsk27oQk0lNmKgDT9oktyUM6N3xXFDOqZC0MIXk4aupoY-7duVUE7h7Jyn0CmC/exec" +
-        params
-    )
-  );
-}
-
+    /* ===== API base (your latest endpoint via corsproxy) ===== */
+    const scriptBaseURL = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbzmj1rsk27oQk0lNmKgDT9oktyUM6N3xXFDOqZC0MIXk4aupoY-7duVUE7h7Jyn0CmC/exec");
 
 async function fetchJSON(url) {
   const res = await fetch(url, { cache: 'no-store' });
@@ -393,38 +384,6 @@ async function fetchJSON(url) {
     throw new Error('Non-JSON response (HTML) – check deployment permissions.');
   return JSON.parse(text);
 }
-
-
-    function readSheetDate(v) {
-  if (!v) return null;
-
-  // If Apps Script already returned a Date object
-  if (v instanceof Date) {
-    return new Date(v.getFullYear(), v.getMonth(), v.getDate());
-  }
-
-  // Sheets serial (e.g. 45678)
-  if (typeof v === "number") {
-    const epoch = new Date(1899, 11, 30);
-    const d = new Date(epoch.getTime() + v * 86400000);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-
-  // YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
-    const [y, m, d] = v.split("-").map(Number);
-    return new Date(y, m - 1, d);
-  }
-
-  // ISO (2025-02-11T00:00:00.000Z)
-  if (!isNaN(Date.parse(v))) {
-    const d = new Date(v);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-
-  return null;
-}
-
 
 
     /* ===== State ===== */
@@ -479,7 +438,7 @@ async function fetchJSON(url) {
 async function loadBookings() {
   showLoader();
   try {
-    const rows = await fetchJSON(buildURL("?type=bookings"));
+    const rows = await fetchJSON(`${scriptBaseURL}?type=bookings`);
     ALL_ROWS = hydrateTypes(rows).sort(sortByMostRecent);
     applyFilters();
   } catch (e) {
@@ -502,13 +461,10 @@ async function loadBookings() {
     }
 
     function sortByMostRecent(a, b) {
-const da = readSheetDate(a["Cleaning Date"]);
-const db = readSheetDate(b["Cleaning Date"]);
+const da = a["Cleaning Date"] ? parseSheetDate(a["Cleaning Date"]).getTime() : 0;
+const db = b["Cleaning Date"] ? parseSheetDate(b["Cleaning Date"]).getTime() : 0;
 
-
-if (db && da && db.getTime() !== da.getTime())
-  return db.getTime() - da.getTime();
-
+      if (db !== da) return db - da;
       // fallback to timestamp or booking id ordering (desc)
       const ta = a["Timestamp"] ? new Date(a["Timestamp"]).getTime() : 0;
       const tb = b["Timestamp"] ? new Date(b["Timestamp"]).getTime() : 0;
@@ -529,7 +485,7 @@ if (db && da && db.getTime() !== da.getTime())
       const q = (fSearch.value || '').toLowerCase().trim();
       const t = fType.value;      // all, airbnb, office
       const s = fStatus.value;    // all or specific
-      const exactDate = fDate.value || null;
+      const exactDate = fDate.value ? new Date(fDate.value) : null;
 
       FILTERED = ALL_ROWS.filter(r => {
         // text search
@@ -548,15 +504,10 @@ if (db && da && db.getTime() !== da.getTime())
 
         // exact date match (same day)
 if (exactDate) {
-  const rowDate = readSheetDate(r["Cleaning Date"]);
-  if (!rowDate) return false;
-
-  const filterDate = new Date(exactDate);
-  if (!isSameDay(rowDate, filterDate)) return false;
+  const d = r["Cleaning Date"] ? parseSheetDate(r["Cleaning Date"]) : null;
+  if (!d) return false;
+  if (!isSameDay(d, exactDate)) return false;
 }
-
-
-
 
 
         return true;
@@ -660,20 +611,10 @@ if (exactDate) {
       return parts.slice(0, count).join(' ') + '…';
     }
 
-
-    function formatDateCell(v) {
-  const d = readSheetDate(v);
-  if (!d) return "";
-
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-
-  return `${dd}/${mm}/${yyyy}`;
+function formatDateCell(v) {
+  const d = parseSheetDate(v);
+  return d ? d.toLocaleDateString("en-AU") : "";
 }
-
-
-
 
 
     function escapeHtml(s) {
@@ -684,7 +625,7 @@ if (exactDate) {
     async function updateStatus(bookingId, status, rowEl) {
       try {
         showLoader();
-        await fetch(buildURL(), {
+        await fetch(scriptBaseURL, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ action: 'updateStatus', bookingId, status })
@@ -732,7 +673,7 @@ async function syncServerBookings() {
   if (SYNC_RUNNING) return;
   SYNC_RUNNING = true;
   try {
-    await fetch(buildURL(), {
+    await fetch(scriptBaseURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'syncAllBookings' })
@@ -779,27 +720,15 @@ async function syncServerBookings() {
       drawerOverlay.classList.add('active');
     }
 
-function toDateInput(v) {
-  const d = readSheetDate(v);
-  if (!d) return "";
-
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-
-
-  const d = parseSheetDate(v);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-
-  return `${yyyy}-${mm}-${dd}`;
-}
-
+    function toDateInput(v) {
+      if (!v) return '';
+      const d = parseSheetDate(v);
+      if (isNaN(d)) return '';
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
 
 
     function renderLinenInputs(row) {
@@ -889,7 +818,7 @@ function toDateInput(v) {
 
       try {
         showLoader();
-        await fetch(buildURL(), {
+        await fetch(scriptBaseURL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
