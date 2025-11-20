@@ -395,42 +395,43 @@ async function fetchJSON(url) {
 
 
 
-    function parseSheetDate(v) {
+function parseSheetDate(v) {
   if (!v) return null;
 
-  // Already Date object
+  // Already Date
   if (v instanceof Date) {
-    return new Date(v.getFullYear(), v.getMonth(), v.getDate());
+    const d = new Date(v.getFullYear(), v.getMonth(), v.getDate());
+    d.setDate(d.getDate() + 1);
+    return d;
   }
 
-  // Google Sheets serial (e.g. 45321)
+  // Sheets serial
   if (typeof v === "number") {
     const epoch = new Date(1899, 11, 30);
     const d = new Date(epoch.getTime() + v * 86400000);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    d.setDate(d.getDate() + 1);
+    return d;
   }
 
   // YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
-    const [y, m, d] = v.split("-").map(Number);
-    return new Date(y, m - 1, d);
+    const [y, m, d0] = v.split("-").map(Number);
+    const d = new Date(y, m - 1, d0);
+    d.setDate(d.getDate() + 1);
+    return d;
   }
 
-  // MM/DD/YYYY
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v)) {
-    const [m, d, y] = v.split("/").map(Number);
-    return new Date(y, m - 1, d);
-  }
-
-  // ISO 8601 (NEW FIX)
-  // e.g. "2025-02-11T00:00:00.000Z"
+  // ISO
   if (!isNaN(Date.parse(v))) {
-    const d = new Date(v);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const raw = new Date(v);
+    const d = new Date(raw.getFullYear(), raw.getMonth(), raw.getDate());
+    d.setDate(d.getDate() + 1);
+    return d;
   }
 
   return null;
 }
+
 
 
 
@@ -612,7 +613,7 @@ if (exactDate) {
     }
 
 function formatDateCell(v) {
-  const d = parseSheetDate(v);
+  const d = parseSheetDate(v); // already +1 day
   return d ? d.toLocaleDateString("en-AU") : "";
 }
 
@@ -722,12 +723,6 @@ async function syncServerBookings() {
 
     function toDateInput(v) {
       if (!v) return '';
-      const d = parseSheetDate(v);
-      if (isNaN(d)) return '';
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const dd = String(d.getDate()).padStart(2,'0');
-      return `${yyyy}-${mm}-${dd}`;
     }
 
 
