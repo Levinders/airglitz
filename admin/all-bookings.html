@@ -396,24 +396,28 @@ select.status-select {
     </ul>
   </aside>
 
-  <div class="overlay" id="overlay"></div>
+<div class="overlay" id="overlay"></div>
 
-  <!-- Content -->
   <div style="flex:1; display:flex; flex-direction:column;">
 
-    <div class="topbar-right">
-  <i class="fa-regular fa-bell"></i>
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 
-  <div class="user-menu">
-    <i class="fa-regular fa-user" id="userIcon"></i>
+  <div class="topbar-right">
+    <i class="fa-regular fa-bell"></i>
 
-    <div class="logout-dropdown" id="logoutDropdown">
-      <button id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
+    <div class="user-menu">
+      <i class="fa-regular fa-user" id="userIcon"></i>
+
+      <div class="logout-dropdown" id="logoutDropdown">
+        <button id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
     </header>
 
