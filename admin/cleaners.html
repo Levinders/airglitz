@@ -53,43 +53,52 @@
 
     .menu-toggle { background: none; border: none; font-size: 20px; color: var(--primary); cursor: pointer; }
     .topbar-right { display: flex; align-items: center; gap: 20px; color: var(--muted); }
-    /* Minimal dropdown (inherits existing styling) */
-.user-menu {
+
+    .user-menu {
   position: relative;
   display: inline-block;
 }
 
 .logout-dropdown {
   position: absolute;
-  top: 32px;
+  top: 36px; /* under the user icon */
   right: 0;
   background: #fff;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 6px 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  padding: 6px 0;
+  width: 140px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(5px);
+  transform: translateY(-6px);
   transition: 0.25s ease;
-  z-index: 3000;
+  z-index: 9999;
 }
 
-.logout-dropdown.show {
+.logout-dropdown.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.logout-dropdown button {
-  border: none;
+#logoutBtn {
+  width: 100%;
   background: none;
-  padding: 6px 4px;
-  cursor: pointer;
+  border: none;
+  padding: 10px 14px;
+  text-align: left;
   font-size: 14px;
   display: flex;
-  gap: 6px;
   align-items: center;
-  color: #d64040;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+#logoutBtn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
 }
 
 
@@ -282,9 +291,8 @@
   <div class="overlay" id="overlay"></div>
 
   <div style="flex:1; display:flex; flex-direction:column;">
-    <header class="topbar">
-      <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
-      <div class="topbar-right">
+
+    <div class="topbar-right">
   <i class="fa-regular fa-bell"></i>
 
   <div class="user-menu">
@@ -297,6 +305,7 @@
     </div>
   </div>
 </div>
+
 
     </header>
 
@@ -362,32 +371,34 @@ if (localStorage.getItem("homeglitzAdminAuth") !== "true") {
   window.location.href = "login.html";
 }
 
-    const userIcon = document.getElementById("userIcon");
-const logoutDropdown = document.getElementById("logoutDropdown");
-const logoutBtn = document.getElementById("logoutBtn");
 
-// Toggle dropdown
-userIcon.onclick = () => {
-  logoutDropdown.classList.toggle("show");
-};
+    // Toggle dropdown
+const userIcon = document.getElementById("userIcon");
+const logoutDropdown = document.getElementById("logoutDropdown");
+
+userIcon.addEventListener("click", () => {
+  logoutDropdown.classList.toggle("active");
+});
 
 // Click outside to close
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".user-menu")) {
-    logoutDropdown.classList.remove("show");
+    logoutDropdown.classList.remove("active");
   }
 });
 
-// Logout action with light fade animation
-logoutBtn.onclick = () => {
-  document.body.style.opacity = "0.5";
-  document.body.style.transition = "0.3s ease";
+// Logout handler
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  // animation
+  logoutDropdown.style.transform = "translateY(10px)";
+  logoutDropdown.style.opacity = "0";
 
   setTimeout(() => {
     localStorage.removeItem("homeglitzAdminAuth");
     window.location.href = "admin-login.html";
-  }, 300);
-};
+  }, 250);
+});
+
 
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('overlay');
