@@ -305,6 +305,11 @@
   <div class="hz-toast" id="toast"></div>
 
   <script>
+
+        // ========= Admin Gate =========
+if (localStorage.getItem("homeglitzAdminAuth") !== "true") {
+  window.location.href = "login.html";
+}
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('overlay');
   const menuToggle = document.getElementById('menuToggle');
