@@ -393,6 +393,32 @@ async function fetchJSON(url) {
     let page = 1;
     let totalPages = 1;
 
+
+    function parseSheetDate(v) {
+  if (!v) return null;
+
+  // Sheet Date object → safe
+  if (v instanceof Date) {
+    return new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  }
+
+  // Serial number
+  if (typeof v === 'number') {
+    const epoch = new Date(1899, 11, 30);
+    const d = new Date(epoch.getTime() + v * 24 * 60 * 60 * 1000);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  // "YYYY-MM-DD"
+  if (typeof v === 'string' && v.includes('-')) {
+    const p = v.split('-');
+    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  }
+
+  return null;
+}
+
+
     /* ===== Load bookings (combined) ===== */
 async function loadBookings() {
   showLoader();
@@ -420,8 +446,9 @@ async function loadBookings() {
     }
 
     function sortByMostRecent(a, b) {
-      const da = a["Cleaning Date"] ? new Date(a["Cleaning Date"]).getTime() : 0;
-      const db = b["Cleaning Date"] ? new Date(b["Cleaning Date"]).getTime() : 0;
+const da = a["Cleaning Date"] ? parseSheetDate(a["Cleaning Date"]).getTime() : 0;
+const db = b["Cleaning Date"] ? parseSheetDate(b["Cleaning Date"]).getTime() : 0;
+
       if (db !== da) return db - da;
       // fallback to timestamp or booking id ordering (desc)
       const ta = a["Timestamp"] ? new Date(a["Timestamp"]).getTime() : 0;
@@ -568,12 +595,11 @@ async function loadBookings() {
       return parts.slice(0, count).join(' ') + '…';
     }
 
-    function formatDateCell(v) {
-      try {
-        const d = (typeof v === 'string' || typeof v === 'number') ? new Date(v) : v;
-        return new Date(d).toLocaleDateString();
-      } catch { return ''; }
-    }
+function formatDateCell(v) {
+  const d = parseSheetDate(v);
+  return d ? d.toLocaleDateString("en-AU") : "";
+}
+
 
     function escapeHtml(s) {
       return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -680,7 +706,7 @@ async function syncServerBookings() {
 
     function toDateInput(v) {
       if (!v) return '';
-      const d = new Date(v);
+      const d = parseSheetDate(v);
       if (isNaN(d)) return '';
       const yyyy = d.getFullYear();
       const mm = String(d.getMonth()+1).padStart(2,'0');
