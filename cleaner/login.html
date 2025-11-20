@@ -17,6 +17,18 @@
     animation:fadeIn .5s ease;
   }
 
+  .input-wrap {
+  position: relative;
+  width: 100%;             /* ⭐ Fixes the width issue */
+  display: flex;           /* ⭐ Ensures input stretches fully */
+}
+
+.input-wrap input {
+  width: 100%;             /* Ensures full width for the field */
+  padding-right: 38px;     /* Room for the eye icon */
+}
+
+
   .wrap{
     min-height:100vh;
     display:flex;
