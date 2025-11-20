@@ -926,32 +926,16 @@ if (prop && hasInventory) {
   });
   CURRENT._newStatus = row['Status'] || 'Pending';
 
-// Reset payment UI
-setPaymentEnabled(false);
-
 const paymentStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
 const alreadyRequested =
   paymentStatusRaw === 'pending' ||
   paymentStatusRaw === 'approved' ||
   paymentStatusRaw === 'paid';
 
-// If job was already Completed before opening → allow request
-if (row.Status === 'Completed' && !alreadyRequested) {
-  setPaymentEnabled(true);
-}
-
-
   /* ============================================================
    When job is Completed → Only Request Payment should show
    ============================================================ */
 const isCompleted = (row['Status'] || '') === 'Completed';
-
-if (isCompleted) {
-  btnSaveStatus.classList.add("disabled");
-} else {
-  btnSaveStatus.classList.remove("disabled");
-}
-
 
   
   drawer.classList.add('open');
@@ -970,17 +954,11 @@ function closeDrawer() {
 }
 
 
-/* set payment field/button enabled only when true */
 function setPaymentEnabled(enabled) {
-  if (enabled) {
-    dwRequestAmount.removeAttribute('disabled');
-    btnRequestPayment.classList.remove('disabled');
-  } else {
-    dwRequestAmount.setAttribute('disabled', 'true');
-    btnRequestPayment.classList.add('disabled');
-  }
+  // Always enabled
+  dwRequestAmount.removeAttribute('disabled');
+  btnRequestPayment.classList.remove('disabled');
 }
-
 
 
 /* ---------------------------
@@ -1004,11 +982,6 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
       paymentStatusRaw === 'pending' ||
       paymentStatusRaw === 'approved' ||
       paymentStatusRaw === 'paid';
-
-    if (alreadyRequested) {
-      setPaymentEnabled(false);
-      return;
-    }
 
     // Enable only when status becomes Completed
     setPaymentEnabled(newStatus === 'Completed');
@@ -1071,69 +1044,58 @@ setTimeout(async () => {
   }
 });
 
-/* ---------------------------
-   Request payment action (ONLY when Completed)
-   --------------------------- */
-btnRequestPayment.addEventListener('click', async () => {
-if (!CURRENT) return;
 
-/* ============================================================
-   Double-request protection
-   ============================================================ */
-const statusRaw = (CURRENT['Payment Status'] ?? '').toString().trim().toLowerCase();
-const alreadyRequested =
-  statusRaw === 'pending' ||
-  statusRaw === 'approved' ||
-  statusRaw === 'paid';
-
-
-if (alreadyRequested) {
-  showToast('Payment already requested for this job.', { duration: 3500 });
-  return;
-}
-
-/* ============================================================
-   Must be completed to request payment
-   ============================================================ */
-if ((CURRENT._newStatus || CURRENT['Status'] || '') !== 'Completed') {
-  showToast('You can only request payment after marking the job as Completed.', {duration:4000});
-  return;
-}
+  btnRequestPayment.addEventListener('click', async () => {
+  if (!CURRENT) return;
 
   const amountRaw = dwRequestAmount.value.trim();
   if (!amountRaw || isNaN(Number(amountRaw))) {
-    showToast('Enter a valid amount', {duration:2800});
+    showToast('Enter a valid amount', { duration: 2800 });
     return;
   }
+
   const amount = Number(amountRaw);
-  // processing
+
+  // No restrictions — always allow
   btnRequestPayment.classList.add('disabled');
   attachSpinner(btnRequestPayment);
 
   try {
-    const json = await fetchApi({ action: 'requestPayment', token, bookingId: CURRENT['Booking ID'], amount });
+    const json = await fetchApi({
+      action: 'requestPayment',
+      token,
+      bookingId: CURRENT['Booking ID'],
+      amount
+    });
+
     if (!json || !json.success) {
-      showToast((json && json.message) ? json.message : 'Request failed', {duration:3500});
+      showToast(json?.message || 'Request failed', { duration: 3500 });
       return;
     }
-    if (json.newToken) { token = json.newToken; localStorage.setItem(tokenKey, token); }
-    showToast('Request sent — admin will review', {duration:3500});
-    // update CURRENT + disable button instantly
-CURRENT['Payment Status'] = 'Pending';
-btnRequestPayment.classList.add('disabled');
+
+    if (json.newToken) {
+      token = json.newToken;
+      localStorage.setItem(tokenKey, token);
+    }
+
+    showToast('Payment request sent', { duration: 3500 });
+
+    CURRENT['Payment Status'] = 'Pending';
+
+    // DO NOT disable — allow multiple if needed
+    btnRequestPayment.classList.remove('disabled');
 
     setTimeout(loadTasks, 700);
     closeDrawer();
   } catch (err) {
     console.error(err);
-    showToast('Network error — could not send request', {duration:3500});
+    showToast('Network error — could not send request', { duration: 3500 });
   } finally {
     removeSpinner(btnRequestPayment);
-    // DO NOT re-enable the button — keep it permanently disabled
-// btnRequestPayment.classList.remove('disabled');   <-- REMOVE THIS LINE COMPLETELY
-
+    btnRequestPayment.classList.remove('disabled');
   }
 });
+
 
 /* ---------------------------
    Search / filters
