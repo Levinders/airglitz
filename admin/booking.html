@@ -25,55 +25,35 @@
   html,body { margin:0; padding:0; overflow-x:hidden; }
   body { display:flex; min-height:100vh; background:var(--primary-light); color:var(--text); }
 
-  /* ---------------------- SIDEBAR A (FULL REPLACEMENT) ---------------------- */
-  .sidebar {
-    position:fixed; left:0; top:0; bottom:0;
-    width:250px; background:var(--panel);
-    border-right:1px solid var(--border);
-    box-shadow:var(--shadow);
-    padding:24px 0;
-    display:flex; flex-direction:column;
-    z-index:2000;
-  }
-  .sidebar .brand { display:flex; justify-content:center; margin-bottom:26px; }
-  .sidebar .brand img { height:48px; }
+  /* === SIDEBAR === */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: 250px; background: var(--panel); border-right: 1px solid var(--border);
+  box-shadow: var(--shadow); display: flex; flex-direction: column;
+  padding: 20px 0; overflow-y: auto; z-index: 2000;
+}
+.sidebar .brand { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+.sidebar .brand img { height: 48px; transition: all var(--transition); }
+.nav-links { list-style: none; padding: 0; margin: 0; }
+.nav-item { position: relative; }
+.nav-links li a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 22px; color: var(--muted); font-weight: 500;
+  text-decoration: none; transition: all var(--transition);
+}
+.nav-links li a:hover, .nav-links li a.active {
+  background: var(--primary-light); color: var(--primary);
+  border-left: 4px solid var(--primary);
+}
+.sub-menu { display: none; flex-direction: column; margin-left: 40px; }
+.sub-menu a {
+  font-size: 14px; color: var(--muted);
+  padding: 8px 0; transition: 0.2s;
+}
+.sub-menu a:hover { color: var(--primary); }
+.nav-item.open .sub-menu { display: flex; }
 
-  .nav-links { list-style:none; margin:0; padding:0; }
-  .nav-links li { margin-bottom:4px; }
 
-  .nav-links a {
-    display:flex; gap:12px; align-items:center;
-    padding:14px 22px;
-    color:var(--muted);
-    text-decoration:none; font-weight:600;
-    transition:0.25s ease;
-  }
-  .nav-links a i { width:20px; }
-
-  .nav-links a:hover,
-  .nav-links a.active {
-    background:var(--primary-light);
-    color:var(--primary);
-    border-left:4px solid var(--primary);
-  }
-
-  /* Submenu */
-  .nav-item { }
-  .sub-menu {
-    display:none;
-    flex-direction:column;
-    margin-left:40px;
-  }
-  .nav-item.open .sub-menu { display:flex; }
-  .sub-menu a {
-    padding:8px 0;
-    font-size:13px;
-    color:var(--muted);
-  }
-  .sub-menu a.active {
-    color:var(--primary);
-    font-weight:600;
-  }
 
   /* ---------------------- TOPBAR ---------------------- */
   .topbar {
@@ -252,8 +232,8 @@
   <div class="brand">
     <img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/mainlogog-removebg-preview.png" alt="HomeGlitz Logo">
   </div>
-  <ul class="nav-links">
 
+  <ul class="nav-links">
     <li><a href="/homeglitz/others/admin-404-page.html"><i class="fa-solid fa-chart-line"></i><span> Dashboard</span></a></li>
 
     <li class="nav-item open">
@@ -261,7 +241,6 @@
         <i class="fa-solid fa-broom"></i><span> Bookings</span>
         <i class="fa-solid fa-chevron-down" style="margin-left:auto;"></i>
       </a>
-
       <div class="sub-menu" style="display:flex;">
         <a href="booking.html" class="active">Create New</a>
         <a href="all-bookings.html">All Bookings</a>
@@ -273,7 +252,6 @@
     <li><a href="/homeglitz/admin/cleaners.html"><i class="fa-solid fa-users"></i><span> Cleaners</span></a></li>
     <li><a href="/homeglitz/admin/reports.html"><i class="fa-solid fa-chart-pie"></i><span> Reports</span></a></li>
     <li><a href="/homeglitz/admin/settings.html"><i class="fa-solid fa-gear"></i><span> Settings</span></a></li>
-
   </ul>
 </aside>
 
@@ -363,26 +341,29 @@
 
   <!-- ===================== SCRIPTS ===================== -->
 <script>
-  /* Sidebar toggle */
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('overlay');
-  const menuToggle = document.getElementById('menuToggle');
-  const bookingMenu = document.getElementById('bookingMenu');
-  const bookingItem = bookingMenu.parentElement;
 
-  menuToggle.onclick = () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('active');
-  };
-  overlay.onclick = () => {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
-  };
+  /* ===== Sidebar / Topbar (exact behavior) ===== */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const menuToggle = document.getElementById('menuToggle');
+const bookingMenu = document.getElementById('bookingMenu');
+const bookingItem = bookingMenu.parentElement;
 
-  bookingMenu.onclick = (e) => {
-    e.preventDefault();
-    bookingItem.classList.toggle('open');
-  };
+menuToggle.onclick = () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
+};
+
+overlay.onclick = () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('active');
+};
+
+bookingMenu.onclick = (e) => {
+  e.preventDefault();
+  bookingItem.classList.toggle('open');
+};
+
 
   /* ORIGINAL BOOKING LOGIC BELOW (UNCHANGED) */
 
