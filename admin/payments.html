@@ -270,6 +270,10 @@
        SIDEBAR JS (inserted)
        ========================== -->
   <script>
+        // ========= Admin Gate =========
+if (localStorage.getItem("homeglitzAdminAuth") !== "true") {
+  window.location.href = "login.html";
+}
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay'); // If you want overlay, keep; if not present, harmless
     const menuToggle = document.getElementById('menuToggle'); // If topbar toggle exists elsewhere
