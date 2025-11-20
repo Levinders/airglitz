@@ -375,11 +375,12 @@
     function hideLoader(){ loader.classList.remove('active'); }
 
 
-    const scriptBaseURL =
-  "https://corsproxy.io/?" +
+const scriptBaseURL =
+  "https://homeglitz.raphaellevinders.workers.dev/?url=" +
   encodeURIComponent(
     "https://script.google.com/macros/s/AKfycbzmj1rsk27oQk0lNmKgDT9oktyUM6N3xXFDOqZC0MIXk4aupoY-7duVUE7h7Jyn0CmC/exec"
   );
+
 
 async function fetchJSON(url) {
   const res = await fetch(url, { cache: 'no-store' });
