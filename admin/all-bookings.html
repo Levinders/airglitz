@@ -9,185 +9,243 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --primary: #0F72B4;
-      --primary-light: #f5faff;
-      --text: #222;
-      --muted: #6c757d;
-      --panel: #fff;
-      --border: #e4e9ef;
-      --radius: 12px;
-      --shadow: 0 6px 20px rgba(15,114,180,0.1);
-      --transition: 0.3s ease;
-    }
+:root {
+  --primary: #0F72B4;
+  --primary-light: #f5faff;
+  --text: #222;
+  --muted: #6c757d;
+  --panel: #fff;
+  --border: #e4e9ef;
+  --radius: 12px;
+  --shadow: 0 6px 20px rgba(15,114,180,0.1);
+  --transition: 0.3s ease;
+}
 
-    * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-    html, body { margin: 0; padding: 0; overflow-x: hidden; }
-    body { display: flex; min-height: 100vh; background: var(--primary-light); color: var(--text); }
+* { box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+body { display: flex; min-height: 100vh; background: var(--primary-light); color: var(--text); }
 
-    /* === SIDEBAR === */
-    .sidebar {
-      position: fixed; left: 0; top: 0; bottom: 0;
-      width: 250px; background: var(--panel); border-right: 1px solid var(--border);
-      box-shadow: var(--shadow); display: flex; flex-direction: column;
-      padding: 20px 0; overflow-y: auto; z-index: 2000;
-    }
-    .sidebar .brand { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
-    .sidebar .brand img { height: 48px; transition: all var(--transition); }
-    .nav-links { list-style: none; padding: 0; margin: 0; }
-    .nav-item { position: relative; }
-    .nav-links li a {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 22px; color: var(--muted); font-weight: 500;
-      text-decoration: none; transition: all var(--transition);
-    }
-    .nav-links li a:hover, .nav-links li a.active {
-      background: var(--primary-light); color: var(--primary);
-      border-left: 4px solid var(--primary);
-    }
-    .sub-menu { display: none; flex-direction: column; margin-left: 40px; }
-    .sub-menu a { font-size: 14px; color: var(--muted); padding: 8px 0; transition: 0.2s; }
-    .sub-menu a:hover { color: var(--primary); }
-    .nav-item.open .sub-menu { display: flex; }
+/* === SIDEBAR === */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: 250px; background: var(--panel); border-right: 1px solid var(--border);
+  box-shadow: var(--shadow); display: flex; flex-direction: column;
+  padding: 20px 0; overflow-y: auto; z-index: 2000;
+}
+.sidebar .brand { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+.sidebar .brand img { height: 48px; transition: all var(--transition); }
+.nav-links { list-style: none; padding: 0; margin: 0; }
+.nav-item { position: relative; }
+.nav-links li a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 22px; color: var(--muted); font-weight: 500;
+  text-decoration: none; transition: all var(--transition);
+}
+.nav-links li a:hover, .nav-links li a.active {
+  background: var(--primary-light); color: var(--primary);
+  border-left: 4px solid var(--primary);
+}
+.sub-menu { display: none; flex-direction: column; margin-left: 40px; }
+.sub-menu a { font-size: 14px; color: var(--muted); padding: 8px 0; transition: 0.2s; }
+.sub-menu a:hover { color: var(--primary); }
+.nav-item.open .sub-menu { display: flex; }
 
-    /* === TOPBAR === */
-    .topbar {
-      height: 60px; background: var(--panel); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 25px; box-shadow: var(--shadow);
-      position: fixed; top: 0; left: 250px; right: 0; z-index: 1000;
-    }
-    .menu-toggle { background: none; border: none; font-size: 20px; color: var(--primary); cursor: pointer; }
-    .topbar-right { display: flex; align-items: center; gap: 20px; color: var(--muted); }
+/* === TOPBAR === */
+.topbar {
+  height: 60px; background: var(--panel); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 25px; box-shadow: var(--shadow);
+  position: fixed; top: 0; left: 250px; right: 0; z-index: 1000;
+}
+.menu-toggle { background: none; border: none; font-size: 20px; color: var(--primary); cursor: pointer; }
+.topbar-right { display: flex; align-items: center; gap: 20px; color: var(--muted); }
 
-    /* === MAIN === */
-    main { flex: 1; margin-left: 250px; padding: 100px 40px 40px; background: var(--primary-light); }
+/* === MAIN === */
+main { flex: 1; margin-left: 250px; padding: 100px 40px 40px; background: var(--primary-light); }
 
-    .card {
-      background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow);
-      border: 1px solid var(--border); padding: 0; overflow: hidden;
-      display: flex; flex-direction: column; height: calc(100vh - 120px);
-    }
+.card {
+  background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow);
+  border: 1px solid var(--border); padding: 0; overflow: hidden;
+  display: flex; flex-direction: column; height: calc(100vh - 120px);
+}
 
-    .card__header { background: var(--panel); border-bottom: 1px solid var(--border); z-index: 5; padding: 16px 20px; }
-    h2.card__title { font-size: 22px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin: 0 0 12px 0; }
+.card__header { background: var(--panel); border-bottom: 1px solid var(--border); z-index: 5; padding: 16px 20px; }
+h2.card__title { font-size: 22px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin: 0 0 12px 0; }
 
-    /* === Filters === */
-    .filters { display: grid; grid-template-columns: 0.2fr 0.2fr 0.2fr 0.2fr auto; gap: 10px; align-items: center; }
-    .filters .field {
-      display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);
-      border-radius: 10px; padding: 8px 12px; background: #fdfdfd;
-    }
-    .filters .field input, .filters .field select { border: none; outline: none; background: transparent; font-size: 14px; flex: 1; }
-    .filters .btn-clear {
-      border: none; border-radius: 10px; padding: 10px 16px;
-      background: #f1f3f5; color: var(--muted); font-weight: 600; cursor: pointer;
-      transition: var(--transition);
-    }
-    .filters .btn-clear:hover { background: #e9ecef; }
+/* === Filters === */
+.filters { display: grid; grid-template-columns: 0.2fr 0.2fr 0.2fr 0.2fr auto; gap: 10px; align-items: center; }
+.filters .field {
+  display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 12px; background: #fdfdfd;
+}
+.filters .field input, .filters .field select { border: none; outline: none; background: transparent; font-size: 14px; flex: 1; }
+.filters .btn-clear {
+  border: none; border-radius: 10px; padding: 10px 16px;
+  background: #f1f3f5; color: var(--muted); font-weight: 600; cursor: pointer;
+  transition: var(--transition);
+}
+.filters .btn-clear:hover { background: #e9ecef; }
 
-    /* === Table === */
-    .table-wrap { flex: 1 1 auto; overflow: auto; border-top: 1px solid var(--border); background: #fff; }
-    table { width: 100%; border-collapse: collapse; min-width: 500px; }
-    thead th { position: sticky; top: 0; background: var(--primary); color: #fff; z-index: 2; font-size: 14px; white-space: nowrap; }
-    th, td { padding: 12px 12px; font-size: 13px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    tbody tr:hover { background: var(--primary-light); cursor: pointer; }
-    td.cell-actions { cursor: default; }
-    .prop-trunc { max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; }
-    select.status-select {
-      border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px;
-      font-size: 13px; background: #f9fbfd; color: var(--text); cursor: pointer;
-    }
+/* === Table === */
+.table-wrap { flex: 1 1 auto; overflow: auto; border-top: 1px solid var(--border); background: #fff; }
+table { width: 100%; border-collapse: collapse; min-width: 500px; }
+thead th { position: sticky; top: 0; background: var(--primary); color: #fff; z-index: 2; font-size: 14px; white-space: nowrap; }
+th, td { padding: 12px 12px; font-size: 13px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:hover { background: var(--primary-light); cursor: pointer; }
+td.cell-actions { cursor: default; }
+.prop-trunc { max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; }
+select.status-select {
+  border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px;
+  font-size: 13px; background: #f9fbfd; color: var(--text); cursor: pointer;
+}
 
-    /* === Drawer === */
-    .drawer-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.25);
-      opacity: 0; visibility: hidden; transition: var(--transition); z-index: 3000;
-    }
-    .drawer-overlay.active { opacity: 1; visibility: visible; }
+/* ============================
+   NEW — Floating Drawer (Cleaners Style)
+   ============================ */
 
-    .drawer {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--panel); border-left: none; box-shadow: none;
-      transform: none; z-index: 3100;
-      display: none; flex-direction: column;
-    }
-    .drawer.active { display: flex; }
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  z-index: 4000;
+}
+.drawer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
 
-    .drawer__head {
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      position: sticky; top: 0; background: var(--panel); z-index: 1;
-    }
-    .drawer__title { font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-    .drawer__body { flex: 1; padding: 20px; overflow-y: auto; }
-    .drawer__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .group { display: flex; flex-direction: column; gap: 8px; }
-    .group label { font-weight: 600; font-size: 14px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-    .group input, .group select, .group textarea {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 10px 12px; font-size: 14px; background: #fdfdfd; outline: none;
-    }
-    .section-title { font-weight: 700; color: var(--text); margin: 8px 0; border-bottom: 1px solid #eef2f6; padding-bottom: 6px; }
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 120%);
+  width: 600px;
+  max-width: 95%;
+  max-height: 85vh;
+  background: var(--panel);
+  border-radius: 20px;
+  box-shadow: 0 -6px 20px rgba(0,0,0,0.1);
+  z-index: 5000;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.drawer.active {
+  transform: translate(-50%, 0);
+}
 
-    /* Packing List for Airbnb */
-    #dwLinenGrid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 12px;
-    }
-    #dwLinenGrid .group {
-      background: #f9fafb; border: 1px solid #e8ecf0; border-radius: 10px;
-      padding: 8px 10px; text-align: center;
-    }
-    #dwLinenGrid .group label { font-size: 12px; font-weight: 600; color: var(--primary); }
-    #dwLinenGrid .group input {
-      margin-top: 2px; font-size: 13px; border-radius: 8px;
-      border: 1px solid #dde3ea; padding: 6px; width: 100%;
-    }
+.drawer__head {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: var(--primary);
+}
 
-    .drawer__footer {
-      border-top: 1px solid var(--border);
-      padding: 14px 20px; display: flex; justify-content: flex-end; gap: 10px;
-      background: var(--panel);
-    }
+.drawer__body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
 
-    /* === Mobile Enhancements === */
-    @media (max-width: 768px) {
-      main { margin-left: 0; padding: 100px 12px; }
-      .sidebar { left: -250px; }
-      .sidebar.open { left: 0; }
-      .topbar { left: 0; right: 0; }
+.drawer__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 24px;
+}
 
-      /* Responsive table container */
-      .table-wrap {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        margin-top: 8px;
-      }
-      table { min-width: 720px; }
+.group { display: flex; flex-direction: column; gap: 6px; }
+.group label {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 14px;
+}
+.group input,
+.group select,
+.group textarea {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fdfdfd;
+}
 
-      /* Drawer full screen */
-      .drawer {
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        width: 100%; height: 100vh;
-        border: none; box-shadow: none;
-        transform: none; display: none;
-      }
-      .drawer.active { display: flex; }
+.section-title {
+  margin: 20px 0 6px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  border-bottom: 1px solid #edf1f6;
+  padding-bottom: 6px;
+}
 
-      /* Packing List: 2-row summary look */
-      #dwLinenGrid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      #dwLinenGrid .group {
-        padding: 8px 10px;
-        background: #fff;
-        border-radius: 8px;
-        border: 1px solid #eaeaea;
-      }
-    }
-  </style>
+.drawer__footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: var(--panel);
+}
+
+/* Packing list stays same */
+#dwLinenGrid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 12px;
+}
+#dwLinenGrid .group {
+  background: #f9fafb; border: 1px solid #e8ecf0; border-radius: 10px;
+  padding: 8px 10px; text-align: center;
+}
+
+/* === Mobile Enhancements === */
+@media (max-width: 768px) {
+  main { margin-left: 0; padding: 100px 12px; }
+  .sidebar { left: -250px; }
+  .sidebar.open { left: 0; }
+  .topbar { left: 0; right: 0; }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+  table { min-width: 720px; }
+
+  /* Drawer fullscreen mobile */
+  .drawer {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+    height: 100vh;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(110%);
+  }
+  .drawer.active {
+    transform: translateY(0);
+  }
+
+  .drawer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  #dwLinenGrid .group {
+    padding: 8px 10px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #eaeaea;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -293,61 +351,78 @@
     </main>
   </div>
 
-  <!-- Drawer -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-  <aside class="drawer" id="drawer">
-    <div class="drawer__handle"></div>
-    <div class="drawer__head">
-      <div class="drawer__title"><i class="fa-solid fa-clipboard-list"></i><span id="dwTitle">Booking Details</span></div>
-      <button class="btn btn-light" id="dwClose"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="drawer__body">
-      <div class="section-title"><i class="fa-solid fa-house"></i> Property</div>
-      <div class="drawer__grid">
-        <div class="group"><label><i class="fa-solid fa-hashtag"></i> Booking ID</label><input id="dwId" type="text" disabled></div>
-        <div class="group"><label><i class="fa-solid fa-layer-group"></i> Type</label><input id="dwType" type="text" disabled></div>
-        <div class="group"><label><i class="fa-solid fa-house-chimney"></i> Property Name</label><input id="dwProp" type="text" disabled></div>
-        <div class="group"><label><i class="fa-solid fa-location-dot"></i> Address</label><input id="dwAddr" type="text" disabled></div>
-      </div>
+<!-- Revamped Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
 
-      <div class="section-title"><i class="fa-solid fa-user"></i> Cleaning</div>
-      <div class="drawer__grid">
-        <div class="group"><label><i class="fa-solid fa-user"></i> Cleaner</label><input id="dwCleaner" type="text"></div>
-        <div class="group"><label><i class="fa-regular fa-calendar"></i> Cleaning Date</label><input id="dwDate" type="date"></div>
-        <div class="group"><label><i class="fa-solid fa-flag"></i> Status</label>
-          <select id="dwStatus">
-            <option>Pending</option>
-            <option>Clean Underway</option>
-            <option>Completed</option>
-          </select>
-        </div>
-        <div class="group"><label><i class="fa-solid fa-briefcase"></i> B2B</label>
-          <div class="b2b-badges">
-            <div class="badge" id="dwB2BYes">Yes</div>
-            <div class="badge active" id="dwB2BNo">No</div>
-          </div>
-        </div>
-      </div>
+<div class="drawer" id="drawer">
 
-      <div class="group" style="margin-top:10px;">
-        <label><i class="fa-regular fa-note-sticky"></i> Notes</label>
-        <textarea id="dwNotes" rows="3" placeholder="Door code, supplies, special requests…"></textarea>
-      </div>
-
-      <div id="dwAirbnbSection" style="margin-top:16px; display:none;">
-  <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;">
-    <div><i class="fa-solid fa-bed"></i> Packing List (Airbnb)</div>
-    <div id="dwTotal" style="font-weight:700;color:var(--primary);font-size:14px;">Total: 0</div>
-  </div>
-  <div id="dwLinenGrid" class="drawer__grid"></div>
+  <!-- Header -->
+  <div class="drawer__head">
+    <span id="dwTitle"><i class="fa-solid fa-clipboard-list"></i> Booking Details</span>
+    <i class="fa-solid fa-xmark" style="cursor:pointer;" id="dwClose"></i>
   </div>
 
-      
+  <!-- Body -->
+  <div class="drawer__body">
+
+    <!-- Property Section -->
+    <div class="section-title"><i class="fa-solid fa-house"></i> Property</div>
+    <div class="drawer__grid">
+      <div class="group"><label>Booking ID</label><input id="dwId" disabled></div>
+      <div class="group"><label>Type</label><input id="dwType" disabled></div>
+      <div class="group"><label>Property Name</label><input id="dwProp" disabled></div>
+      <div class="group"><label>Address</label><input id="dwAddr" disabled></div>
     </div>
-    <div class="drawer__footer">
-      <button class="btn btn-light" id="dwCancel">Cancel</button>
-      <button class="btn btn-primary" id="dwSave"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+
+    <!-- Cleaning Section -->
+    <div class="section-title"><i class="fa-solid fa-broom"></i> Cleaning</div>
+    <div class="drawer__grid">
+      <div class="group"><label>Cleaner</label><input id="dwCleaner"></div>
+      <div class="group"><label>Cleaning Date</label><input id="dwDate" type="date"></div>
+      <div class="group">
+        <label>Status</label>
+        <select id="dwStatus">
+          <option>Pending</option>
+          <option>Clean Underway</option>
+          <option>Completed</option>
+        </select>
+      </div>
+
+      <div class="group">
+        <label>B2B</label>
+        <div style="display:flex;gap:8px;">
+          <div id="dwB2BYes" class="badge">Yes</div>
+          <div id="dwB2BNo" class="badge active">No</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Notes -->
+    <div class="group" style="margin-top:10px;">
+      <label>Notes</label>
+      <textarea id="dwNotes" rows="3"></textarea>
+    </div>
+
+    <!-- Airbnb Packing List -->
+    <div id="dwAirbnbSection" style="display:none;">
+      <div class="section-title">
+        <i class="fa-solid fa-bed"></i> Packing List (Airbnb)
+        <span id="dwTotal" style="float:right;color:var(--primary);font-weight:600;">Total: 0</span>
+      </div>
+      <div id="dwLinenGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer__footer">
+    <button class="btn btn-light" id="dwCancel">Cancel</button>
+    <button class="btn btn-primary" id="dwSave"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+  </div>
+</div>
+
+
+    
   </aside>
 
   <!-- Toast + Loader -->
