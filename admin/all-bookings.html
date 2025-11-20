@@ -389,9 +389,35 @@ async function fetchJSON(url) {
   return JSON.parse(text);
 }
 
+
     function readSheetDate(v) {
-  if (!v) return "";
-  return String(v).trim(); // No conversion at all
+  if (!v) return null;
+
+  // If Apps Script already returned a Date object
+  if (v instanceof Date) {
+    return new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  }
+
+  // Sheets serial (e.g. 45678)
+  if (typeof v === "number") {
+    const epoch = new Date(1899, 11, 30);
+    const d = new Date(epoch.getTime() + v * 86400000);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  // YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    const [y, m, d] = v.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  // ISO (2025-02-11T00:00:00.000Z)
+  if (!isNaN(Date.parse(v))) {
+    const d = new Date(v);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  return null;
 }
 
 
@@ -471,10 +497,13 @@ async function loadBookings() {
     }
 
     function sortByMostRecent(a, b) {
-const da = a["Cleaning Date"] ? toDateInput(a["Cleaning Date"]) : "";
-const db = b["Cleaning Date"] ? toDateInput(b["Cleaning Date"]) : "";
+const da = readSheetDate(a["Cleaning Date"]);
+const db = readSheetDate(b["Cleaning Date"]);
 
-      if (db !== da) return db - da;
+
+if (db && da && db.getTime() !== da.getTime())
+  return db.getTime() - da.getTime();
+
       // fallback to timestamp or booking id ordering (desc)
       const ta = a["Timestamp"] ? new Date(a["Timestamp"]).getTime() : 0;
       const tb = b["Timestamp"] ? new Date(b["Timestamp"]).getTime() : 0;
@@ -514,9 +543,13 @@ const db = b["Cleaning Date"] ? toDateInput(b["Cleaning Date"]) : "";
 
         // exact date match (same day)
 if (exactDate) {
-  const d = readSheetDate(r["Cleaning Date"]);
-  if (d !== exactDate) return false;
+  const rowDate = readSheetDate(r["Cleaning Date"]);
+  if (!rowDate) return false;
+
+  const filterDate = new Date(exactDate);
+  if (!isSameDay(rowDate, filterDate)) return false;
 }
+
 
 
 
@@ -622,18 +655,18 @@ if (exactDate) {
       return parts.slice(0, count).join(' ') + '…';
     }
 
-function formatDateCell(v) {
-  const txt = readSheetDate(v);
-  if (!txt) return "";
 
-  // If the value is 2025-11-20 → convert to 20/11/2025 ONLY for looks
-  if (/^\d{4}-\d{2}-\d{2}$/.test(txt)) {
-    const [y,m,d] = txt.split("-");
-    return `${d}/${m}/${y}`;
-  }
+    function formatDateCell(v) {
+  const d = readSheetDate(v);
+  if (!d) return "";
 
-  return txt; // fallback
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  return `${dd}/${mm}/${yyyy}`;
 }
+
 
 
 
@@ -742,13 +775,16 @@ async function syncServerBookings() {
     }
 
 function toDateInput(v) {
-  const txt = readSheetDate(v);
-  if (!txt) return "";
+  const d = readSheetDate(v);
+  if (!d) return "";
 
-  if (/^\d{4}-\d{2}-\d{2}$/.test(txt)) return txt;
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
 
-  return "";
+  return `${yyyy}-${mm}-${dd}`;
 }
+
 
 
   const d = parseSheetDate(v);
