@@ -545,52 +545,53 @@ async function loadCleaners() {
     showToast("Form reset");
   };
 
-  formEl.onsubmit = async (e) => {
-    e.preventDefault();
+formEl.onsubmit = async (e) => {
+  e.preventDefault();
 
-    if (!propertyTypeEl.value || !propertyEl.value || !date.value || !cleanersEl.value) {
-      showToast("Please complete all required fields");
-      return;
-    }
+  if (!propertyTypeEl.value || !propertyEl.value || !date.value || !cleanersEl.value) {
+    showToast("Please complete all required fields");
+    return;
+  }
 
-    const payload = {
-      propertyType: propertyTypeEl.value,
-      property: propertyEl.value,
-      // Convert YYYY-MM-DD to a clean date object without timezone offset
-      const d = new Date(date.value + "T00:00:00");
-      const cleanDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      
-      date: cleanDate,
+  // ⭐ FIXED: Clean date BEFORE payload
+  const d = new Date(date.value + "T00:00:00");
+  const cleanDate =
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-      cleaner: cleanersEl.value,
-      b2b: document.querySelector(".linen-badge.active").textContent,
-      notes: notes.value
-    };
-
-    try {
-      showLoader("Saving booking…");
-      await fetch(scriptBaseURL, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify(payload)
-      });
-
-      showToast("✓ Saved successfully!");
-      formEl.reset();
-      setB2BDefaultNo();
-      clearPropertyInfo();
-      setTimeout(() => location.reload(), 1000);
-
-    } catch (err) {
-      showToast("✓ Saved successfully!");
-      formEl.reset();
-      setB2BDefaultNo();
-      clearPropertyInfo();
-      setTimeout(() => location.reload(), 1000);
-    } finally {
-      hideLoader();
-    }
+  const payload = {
+    propertyType: propertyTypeEl.value,
+    property: propertyEl.value,
+    date: cleanDate,        // ⭐ NOW SAFE — no timezone shift
+    cleaner: cleanersEl.value,
+    b2b: document.querySelector(".linen-badge.active").textContent,
+    notes: notes.value
   };
+
+  try {
+    showLoader("Saving booking…");
+    await fetch(scriptBaseURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    showToast("✓ Saved successfully!");
+    formEl.reset();
+    setB2BDefaultNo();
+    clearPropertyInfo();
+    setTimeout(() => location.reload(), 1000);
+
+  } catch (err) {
+    showToast("✓ Saved successfully!");
+    formEl.reset();
+    setB2BDefaultNo();
+    clearPropertyInfo();
+    setTimeout(() => location.reload(), 1000);
+  } finally {
+    hideLoader();
+  }
+};
+
 
   setB2BDefaultNo();
   init();
