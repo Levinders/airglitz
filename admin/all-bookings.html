@@ -461,8 +461,8 @@ async function loadBookings() {
     }
 
     function sortByMostRecent(a, b) {
-const da = a["Cleaning Date"] ? parseSheetDate(a["Cleaning Date"]).getTime() : 0;
-const db = b["Cleaning Date"] ? parseSheetDate(b["Cleaning Date"]).getTime() : 0;
+const da = a["Cleaning Date"] ? toDateInput(a["Cleaning Date"]) : "";
+const db = b["Cleaning Date"] ? toDateInput(b["Cleaning Date"]) : "";
 
       if (db !== da) return db - da;
       // fallback to timestamp or booking id ordering (desc)
@@ -485,7 +485,7 @@ const db = b["Cleaning Date"] ? parseSheetDate(b["Cleaning Date"]).getTime() : 0
       const q = (fSearch.value || '').toLowerCase().trim();
       const t = fType.value;      // all, airbnb, office
       const s = fStatus.value;    // all or specific
-      const exactDate = fDate.value ? new Date(fDate.value) : null;
+      const exactDate = fDate.value ? fDate.value : null; // string only
 
       FILTERED = ALL_ROWS.filter(r => {
         // text search
@@ -504,10 +504,10 @@ const db = b["Cleaning Date"] ? parseSheetDate(b["Cleaning Date"]).getTime() : 0
 
         // exact date match (same day)
 if (exactDate) {
-  const d = r["Cleaning Date"] ? parseSheetDate(r["Cleaning Date"]) : null;
-  if (!d) return false;
-  if (!isSameDay(d, exactDate)) return false;
+  const cleaned = toDateInput(r["Cleaning Date"]);
+  if (cleaned !== exactDate) return false;
 }
+
 
 
         return true;
@@ -613,8 +613,15 @@ if (exactDate) {
 
 function formatDateCell(v) {
   const d = parseSheetDate(v);
-  return d ? d.toLocaleDateString("en-AU") : "";
+  if (!d) return "";
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+
+  return `${dd}/${mm}/${yyyy}`; // AU format without timezone shift
 }
+
 
 
     function escapeHtml(s) {
@@ -720,15 +727,22 @@ async function syncServerBookings() {
       drawerOverlay.classList.add('active');
     }
 
-    function toDateInput(v) {
-      if (!v) return '';
-      const d = parseSheetDate(v);
-      if (isNaN(d)) return '';
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const dd = String(d.getDate()).padStart(2,'0');
-      return `${yyyy}-${mm}-${dd}`;
-    }
+function toDateInput(v) {
+  if (!v) return "";
+
+  // If Google Sheets already returns yyyy-mm-dd
+  if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    return v;
+  }
+
+  const d = parseSheetDate(v);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 
 
     function renderLinenInputs(row) {
