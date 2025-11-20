@@ -460,16 +460,27 @@ bookingMenu.onclick = (e) => {
     infoBox.innerHTML = "";
   }
 
-  async function loadCleaners() {
-    const data = await fetchJSON(`${scriptBaseURL}?type=cleaners`);
-    cleanersEl.innerHTML = `<option value="">Select cleaner...</option>`;
-    data.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c["Cleaner Name"];
-      opt.textContent = c["Cleaner Name"];
-      cleanersEl.appendChild(opt);
-    });
-  }
+async function loadCleaners() {
+  const data = await fetchJSON(`${scriptBaseURL}?type=cleaners`);
+
+  cleanersEl.innerHTML = `<option value="">Select cleaner...</option>`;
+
+  data.forEach(c => {
+    const name = c["Cleaner Name"];
+    if (!name) return;
+
+    // 🔥 ONLY allow active cleaners
+    const isActive = (c["Active"] || "").toString().toLowerCase() === "yes";
+    if (!isActive) return;
+
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+
+    cleanersEl.appendChild(opt);
+  });
+}
+
 
   async function loadProperties(category) {
     const data = await fetchJSON(`${scriptBaseURL}?type=properties&category=${encodeURIComponent(category)}`);
