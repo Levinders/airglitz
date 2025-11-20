@@ -854,7 +854,7 @@ async function syncServerBookings() {
   `;
 
   const total = [...bedItems, ...bathItems].reduce((sum, [key]) => sum + (Number(row[key]) || 0), 0);
-  dwTotal.textContent = `Total: ${total}`;
+  dwTotal.textContent = `Total: $${total}`;
 }
 
 
