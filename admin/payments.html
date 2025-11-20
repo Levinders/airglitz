@@ -16,6 +16,88 @@
   *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
   html,body{height:100%;margin:0;background:var(--primary-light);color:#222}
 
+  /* ---- USER MENU + LOGOUT DROPDOWN ---- */
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#userIcon {
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s ease;
+}
+
+#userIcon:hover {
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* Dropdown styling */
+.logout-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-radius: 10px;
+  padding: 8px 0;
+  width: 160px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: 0.25s ease;
+  z-index: 2000;
+}
+
+.logout-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Logout button */
+#logoutBtn {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+#logoutBtn i {
+  color: var(--primary);
+}
+
+#logoutBtn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Align icons horizontally */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-right i {
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
   /* ==========================
      SIDEBAR (INSERTED BLOCK)
      ========================== */
@@ -195,14 +277,29 @@
     </ul>
   </aside>
 
-  <!-- ========== topbar (unchanged) ========== -->
-  <header class="topbar">
-    <div class="brandline">
+ <div class="overlay" id="overlay"></div>
+
+  <div style="flex:1; display:flex; flex-direction:column;">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="topbar-right">
+    <i class="fa-regular fa-bell"></i>
+
+    <div class="user-menu">
+      <i class="fa-regular fa-user" id="userIcon"></i>
+
+      <div class="logout-dropdown" id="logoutDropdown">
+        <button id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
     </div>
-    <div style="display:flex;gap:12px;align-items:center;color:var(--muted)">
-      <div class="topbar-right"><i class="fa-regular fa-bell"></i><i class="fa-regular fa-user"></i></div>
-    </div>
-  </header>
+  </div>
+</header>
 
   <!-- ========== main content (unchanged) ========== -->
   <main>
@@ -274,6 +371,35 @@
 if (localStorage.getItem("homeglitzAdminAuth") !== "true") {
   window.location.href = "login.html";
 }
+
+
+    // Toggle logout dropdown
+const userIcon = document.getElementById("userIcon");
+const logoutDropdown = document.getElementById("logoutDropdown");
+
+userIcon.addEventListener("click", () => {
+  logoutDropdown.classList.toggle("active");
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".user-menu")) {
+    logoutDropdown.classList.remove("active");
+  }
+});
+
+// Perform Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  // Smooth fade-out
+  document.body.style.transition = "opacity 0.4s ease";
+  document.body.style.opacity = "0";
+
+  setTimeout(() => {
+    localStorage.removeItem("homeglitzAdminAuth");
+    window.location.href = "login.html";
+  }, 400);
+});
+
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay'); // If you want overlay, keep; if not present, harmless
     const menuToggle = document.getElementById('menuToggle'); // If topbar toggle exists elsewhere
