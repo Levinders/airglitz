@@ -409,6 +409,7 @@ bookingMenu.onclick = (e) => {
   const yesBtn = document.getElementById('b2bYes');
   const noBtn = document.getElementById('b2bNo');
   const formEl = document.getElementById('bookingForm');
+  const notes = document.getElementById('notes');
 
   async function fetchJSON(url) {
     const res = await fetch(url, { cache: 'no-store' });
