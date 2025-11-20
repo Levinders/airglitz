@@ -473,6 +473,12 @@ select.status-select {
 
 
   <script>
+
+    // ========= Admin Gate =========
+if (localStorage.getItem("homeglitzAdminAuth") !== "true") {
+  window.location.href = "admin-login.html";
+}
+
     /* ===== Sidebar / Topbar (exact behavior) ===== */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
