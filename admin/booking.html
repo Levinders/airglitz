@@ -556,7 +556,12 @@ async function loadCleaners() {
     const payload = {
       propertyType: propertyTypeEl.value,
       property: propertyEl.value,
-      date: date.value,
+      // Convert YYYY-MM-DD to a clean date object without timezone offset
+      const d = new Date(date.value + "T00:00:00");
+      const cleanDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      
+      date: cleanDate,
+
       cleaner: cleanersEl.value,
       b2b: document.querySelector(".linen-badge.active").textContent,
       notes: notes.value
