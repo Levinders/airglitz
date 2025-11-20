@@ -389,20 +389,48 @@
     `).join("");
   }
 
-  async function saveCleaner() {
-    const payload = {
-      action: 'saveCleaner',
-      cleanerId: document.getElementById('cleanerId').value,
-      name: document.getElementById('cleanerName').value,
-      email: document.getElementById('cleanerEmail').value,
-      phone: document.getElementById('cleanerPhone').value,
-      password: document.getElementById('cleanerPassword').value,
-      notes: document.getElementById('cleanerNotes').value,
-      active: document.getElementById('cleanerActive').value || 'Yes'
+async function saveCleaner() {
+  const isNew = !document.getElementById('cleanerId').value; // NEW → Detect new cleaner
+
+  const payload = {
+    action: 'saveCleaner',
+    cleanerId: document.getElementById('cleanerId').value,
+    name: document.getElementById('cleanerName').value,
+    email: document.getElementById('cleanerEmail').value,
+    phone: document.getElementById('cleanerPhone').value,
+    password: document.getElementById('cleanerPassword').value,
+    notes: document.getElementById('cleanerNotes').value,
+    active: document.getElementById('cleanerActive').value || 'Yes'
+  };
+
+  // Save to backend
+  await fetch(scriptBaseURL, { 
+    method: 'POST', 
+    headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify(payload) 
+  });
+
+  // ⭐ NEW EMAIL TRIGGER ⭐
+  if (isNew) {
+    const emailPayload = {
+      action: 'sendCleanerWelcome',
+      name: payload.name,
+      email: payload.email,
+      password: payload.password
     };
-    await fetch(scriptBaseURL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    closeDrawer(); showToast('Cleaner saved'); setTimeout(loadCleaners, 800);
+
+    await fetch(scriptBaseURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(emailPayload)
+    });
   }
+
+  closeDrawer();
+  showToast('Cleaner saved');
+  setTimeout(loadCleaners, 800);
+}
+
 
   async function deleteCleaner(id) {
     if (!confirm('Delete this cleaner?')) return;
