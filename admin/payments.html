@@ -359,9 +359,67 @@
   </main>
 
   <!-- drawer (unchanged) -->
-  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true">
-    … (unchanged drawer HTML)
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="head">
+    <strong>Payment Request <span id="dwRequestId"></span></strong>
+    <button class="btn ghost" id="btnClose"><i class="fa-solid fa-xmark"></i></button>
   </div>
+
+  <div class="body">
+    <div id="drawerMsg" style="color:#c0392b; margin-bottom:10px;"></div>
+
+    <p id="dwMeta" style="margin-bottom:10px; color:#6c757d;"></p>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Booking ID:</strong></label>
+      <div id="dwBookingId"></div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Property:</strong></label>
+      <div id="dwProperty"></div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Cleaner:</strong></label>
+      <div id="dwCleaner"></div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Amount (Ex GST):</strong></label>
+      <input id="dwAmount" type="number" min="0" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;">
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Status:</strong></label>
+      <select id="dwStatus" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Paid">Paid</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Mark Paid:</strong></label>
+      <select id="dwMarkPaid" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <option value="no">No</option>
+        <option value="yes">Yes — mark this request as Paid</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label><strong>Admin Note:</strong></label>
+      <textarea id="dwAdminNote" style="width:100%;padding:8px;height:90px;border-radius:6px;border:1px solid #ccc;"></textarea>
+    </div>
+
+    <div style="margin-top:20px; display:flex; gap:10px;">
+      <button class="btn primary" id="btnApprove"><i class="fa-solid fa-check"></i> Approve + Invoice</button>
+      <button class="btn ghost" id="btnApproveOnly">Approve</button>
+      <button class="btn" id="btnMarkPaid" style="background:#16a34a;color:#fff;"><i class="fa-solid fa-dollar-sign"></i> Mark Paid</button>
+    </div>
+  </div>
+</div>
+
 
   <!-- ==========================
        SIDEBAR JS (inserted)
@@ -466,23 +524,33 @@ searchEl.addEventListener('input', applyFilters);
 filterStatus.addEventListener('change', applyFilters);
 
   
-  async function approveRequest(requestId, approvedAmount) {
-    const res = await fetch(SCRIPT_BASE_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ action: 'adminApprovePayment', requestId, approvedAmount, approver: 'Admin' })
-    });
-    const json = await res.json();
-    if (json && json.success) {
-      // show link
-      document.getElementById('btnViewInvoice').style.display = 'inline-block';
-      document.getElementById('btnViewInvoice').onclick = () => window.open(json.pdfUrl, '_blank');
-      // update UI as needed
-    } else {
-      console.error(json);
-      alert('Approve failed: ' + (json && json.message));
+async function approveRequest(requestId, approvedAmount) {
+  const res = await fetch(PROXY, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      action: 'adminApprovePayment',
+      requestId,
+      approvedAmount,
+      approver: 'Admin'
+    })
+  });
+
+  const json = await res.json();
+  if (json && json.success) {
+    if (json.pdfUrl) {
+      const btn = document.getElementById('btnViewInvoice');
+      if (btn) {
+        btn.style.display = 'inline-block';
+        btn.onclick = () => window.open(json.pdfUrl, '_blank');
+      }
     }
+  } else {
+    console.error(json);
+    alert('Approve failed: ' + (json && json.message));
   }
+}
+
 
 /* load list from backend */
 async function loadRequests() {
