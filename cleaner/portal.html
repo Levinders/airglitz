@@ -668,6 +668,27 @@ const tokenKey = 'homeglitz_cleaner_token';
 let AUTO_PAUSE = false;
 
 
+
+/**
+ * Adds +1 day for display only (timezone correction)
+ * and formats as:  Thu, 28 Nov 2025 — 10:45 AM
+ * Works safely for both backend UTC and frontend local times.
+ */
+function formatDateShortPlusOne(value) {
+  if (!value) return '';
+  try {
+    const d = new Date(value);
+    d.setDate(d.getDate() + 1);
+    return d.toLocaleDateString('en-AU', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short'
+    });
+  } catch (e) {
+    return String(value);
+  }
+}
+
 /* ---------------------------
    small UI helpers
    --------------------------- */
