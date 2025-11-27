@@ -674,20 +674,26 @@ let AUTO_PAUSE = false;
  * and formats as:  Thu, 28 Nov 2025 — 10:45 AM
  * Works safely for both backend UTC and frontend local times.
  */
-function formatDateShortPlusOne(value) {
-  if (!value) return '';
+function formatDateCell(v) {
+  if (!v) return '';
   try {
-    const d = new Date(value);
+    const d = new Date(v);
+    if (isNaN(d)) return v;
+
+    // ✅ Add +1 day
     d.setDate(d.getDate() + 1);
+
     return d.toLocaleDateString('en-AU', {
       weekday: 'short',
       day: 'numeric',
       month: 'short'
     });
-  } catch (e) {
-    return String(value);
+  } catch {
+    return v;
   }
 }
+
+  
 
 /* ---------------------------
    small UI helpers
