@@ -984,7 +984,7 @@ async function approveFlow(mode) {
     action: 'adminApprovePayment',
     requestId,
     approvedAmount,
-    // markPaid true only when using Paid + Invoice
+    // ✅ markPaid true only when using Paid + Invoice
     markPaid: (mode === 'paid'),
     adminNote,
     approver
@@ -992,6 +992,7 @@ async function approveFlow(mode) {
 
   drawerMsg.style.color = '#6c757d';
   drawerMsg.textContent = 'Saving…';
+
   try {
     const res = await fetch(PROXY, {
       method: 'POST',
@@ -1006,12 +1007,30 @@ async function approveFlow(mode) {
       return;
     }
 
+    // ✅ Update local CURRENT + ALL immediately (UI sync)
+    CURRENT['Amount'] = approvedAmount;
+    CURRENT['Approved Amount'] = approvedAmount;
+    CURRENT['Admin Note'] = adminNote;
+    CURRENT['Status'] = mode === 'paid' ? 'Paid' : 'Approved';
+
+    // ✅ Update table without full reload
+    const row = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(4)`);
+    if (row) row.textContent = `$${approvedAmount.toFixed(2)}`;
+
+    // ✅ Update status badge live
+    const statusBadge = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(6) .status-badge`);
+    if (statusBadge) {
+      statusBadge.className = `status-badge ${mode === 'paid' ? 's-paid' : 's-approved'}`;
+      statusBadge.textContent = mode === 'paid' ? 'Paid' : 'Approved';
+    }
+
+    // ✅ Feedback + smooth refresh
     drawerMsg.style.color = '#16a34a';
-    drawerMsg.textContent = 'Updated — refreshing list';
-    setTimeout(async () => {
-      await loadRequests();
+    drawerMsg.textContent = 'Updated successfully';
+    setTimeout(() => {
       closeDrawer();
-    }, 700);
+      updateSummary(ALL);
+    }, 600);
   } catch (err) {
     console.error(err);
     drawerMsg.style.color = '#c0392b';
@@ -1019,6 +1038,8 @@ async function approveFlow(mode) {
   }
 }
 
+
+    
 /* helpers */
 function formatDate(v) {
   try {
