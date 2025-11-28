@@ -903,12 +903,18 @@ async function checkExistingPaymentRequest(bookingId) {
       action: 'checkPaymentRequest',
       bookingId
     });
-    return json && json.exists; // true if payment exists
+    if (!json || !json.success) return { exists: false };
+
+    return {
+      exists: !!json.exists,
+      requestId: json.requestId || ''
+    };
   } catch (err) {
     console.error('Payment check failed', err);
-    return false;
+    return { exists: false };
   }
 }
+
 
 
   
@@ -989,11 +995,11 @@ const isCompleted = (row['Status'] || '') === 'Completed';
   drawer.classList.add('open');
   drawer.setAttribute('aria-hidden','false');
 
-  /* ============================================================
+/* ============================================================
    💳 Payment Request Existence Check (UI + Disable Buttons)
    ============================================================ */
 (async () => {
-  const exists = await checkExistingPaymentRequest(bookingId);
+  const { exists, requestId } = await checkExistingPaymentRequest(bookingId);
   const noticeId = 'paymentNotice';
   let notice = document.getElementById(noticeId);
 
@@ -1001,7 +1007,7 @@ const isCompleted = (row['Status'] || '') === 'Completed';
   if (notice) notice.remove();
 
   if (exists) {
-    // Create polished UI notice
+    // Create a polished UI notice
     notice = document.createElement('div');
     notice.id = noticeId;
     notice.innerHTML = `
@@ -1015,9 +1021,33 @@ const isCompleted = (row['Status'] || '') === 'Completed';
         font-weight:600;
         text-align:center;
       ">
-        <i class="fa-solid fa-circle-info"></i> Payment request already submitted for this job.
+        <i class="fa-solid fa-circle-info"></i>
+        Payment already requested
+        ${requestId ? ` (<strong>${requestId}</strong>)` : ''}.
       </div>
     `;
+
+    // Insert the notice neatly above the payment section
+    const body = drawer.querySelector('.body');
+    const paymentSection = body.querySelector('#dwRequestAmount').closest('div');
+    body.insertBefore(notice, paymentSection);
+
+    // Disable both buttons when already requested
+    btnSaveStatus.classList.add('disabled');
+    btnSaveStatus.disabled = true;
+    btnRequestPayment.classList.add('disabled');
+    btnRequestPayment.disabled = true;
+  } else {
+    // Ensure buttons are enabled when no payment exists
+    btnSaveStatus.classList.remove('disabled');
+    btnSaveStatus.disabled = false;
+    btnRequestPayment.classList.remove('disabled');
+    btnRequestPayment.disabled = false;
+  }
+})();
+
+
+    
     // Insert at top of drawer body
     const body = drawer.querySelector('.body');
     const paymentSection = body.querySelector('#dwRequestAmount').closest('div');
