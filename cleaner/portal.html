@@ -893,6 +893,25 @@ listCards.innerHTML = rows.map(r => {
 /* ---------------------------
    Drawer open/close
    --------------------------- */
+
+  /* ============================================================
+   Check if Payment Request already exists for this booking
+   ============================================================ */
+async function checkExistingPaymentRequest(bookingId) {
+  try {
+    const json = await fetchApi({
+      action: 'checkPaymentRequest',
+      bookingId
+    });
+    return json && json.exists; // true if payment exists
+  } catch (err) {
+    console.error('Payment check failed', err);
+    return false;
+  }
+}
+
+
+  
 function openDrawer(bookingId) {
   AUTO_PAUSE = true; // ⛔ pause auto-refresh
 
@@ -969,6 +988,56 @@ const isCompleted = (row['Status'] || '') === 'Completed';
   
   drawer.classList.add('open');
   drawer.setAttribute('aria-hidden','false');
+
+  /* ============================================================
+   💳 Payment Request Existence Check (UI + Disable Buttons)
+   ============================================================ */
+(async () => {
+  const exists = await checkExistingPaymentRequest(bookingId);
+  const noticeId = 'paymentNotice';
+  let notice = document.getElementById(noticeId);
+
+  // Remove previous notice if any
+  if (notice) notice.remove();
+
+  if (exists) {
+    // Create polished UI notice
+    notice = document.createElement('div');
+    notice.id = noticeId;
+    notice.innerHTML = `
+      <div style="
+        background:#fff8e6;
+        border:1px solid #ffe8b3;
+        color:#9a6200;
+        border-radius:12px;
+        padding:10px 14px;
+        margin-top:10px;
+        font-weight:600;
+        text-align:center;
+      ">
+        <i class="fa-solid fa-circle-info"></i> Payment request already submitted for this job.
+      </div>
+    `;
+    // Insert at top of drawer body
+    const body = drawer.querySelector('.body');
+    body.insertBefore(notice, body.firstChild);
+
+    // Disable both buttons
+    btnSaveStatus.classList.add('disabled');
+    btnSaveStatus.disabled = true;
+
+    btnRequestPayment.classList.add('disabled');
+    btnRequestPayment.disabled = true;
+  } else {
+    // Ensure they’re active if no payment exists
+    btnSaveStatus.classList.remove('disabled');
+    btnSaveStatus.disabled = false;
+
+    btnRequestPayment.classList.remove('disabled');
+    btnRequestPayment.disabled = false;
+  }
+})();
+
 
   document.getElementById('dwNotes').focus();
 }
