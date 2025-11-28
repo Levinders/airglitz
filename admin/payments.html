@@ -1047,7 +1047,7 @@ async function approveFlow(mode) {
     return;
   }
 
-const newStatus = dwStatus.value || CURRENT.Status || 'Pending';
+const newStatus = document.getElementById('dwStatus').value.trim() || 'Pending';
 
 const payload = {
   action: 'adminApprovePayment',
