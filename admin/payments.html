@@ -466,6 +466,21 @@
       grid-template-columns:1fr;
     }
   }
+
+  /* ==========================
+   Drawer closing animation
+   ========================== */
+.drawer.closing {
+  transform: translate(-50%, 110%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease;
+}
+
+.drawer-overlay.closing {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
 </style>
 </head>
 
@@ -652,7 +667,7 @@
     <div class="drawer__footer">
       <button class="btn ghost" id="btnApproveOnly">
         <i class="fa-solid fa-check"></i>
-        Approve (no invoice)
+        Save
       </button>
       <button class="btn primary" id="btnApprove">
         <i class="fa-solid fa-dollar-sign"></i>
@@ -952,13 +967,30 @@ function setPaidMode(isPaid) {
 }
 
 /* close drawer */
-function closeDrawer() {
-  drawer.classList.remove('active');
-  drawerOverlay.classList.remove('active');
-  drawer.setAttribute('aria-hidden', 'true');
-  CURRENT = null;
-  drawerMsg.textContent = '';
+function closeDrawer(animated = true) {
+  if (animated) {
+    // Add 'closing' class for smooth exit
+    drawer.classList.add('closing');
+    drawerOverlay.classList.add('closing');
+
+    // Remove after animation completes
+    setTimeout(() => {
+      drawer.classList.remove('active', 'closing');
+      drawerOverlay.classList.remove('active', 'closing');
+      drawer.setAttribute('aria-hidden', 'true');
+      CURRENT = null;
+      drawerMsg.textContent = '';
+    }, 350);
+  } else {
+    // Immediate close (no animation)
+    drawer.classList.remove('active');
+    drawerOverlay.classList.remove('active');
+    drawer.setAttribute('aria-hidden', 'true');
+    CURRENT = null;
+    drawerMsg.textContent = '';
+  }
 }
+
 
 /* approveFlow: mode = 'paid' or 'approve' */
 async function approveFlow(mode) {
@@ -1027,10 +1059,10 @@ async function approveFlow(mode) {
     // ✅ Feedback + smooth refresh
     drawerMsg.style.color = '#16a34a';
     drawerMsg.textContent = 'Updated successfully';
-    setTimeout(() => {
-      closeDrawer();
-      updateSummary(ALL);
-    }, 600);
+setTimeout(() => {
+  closeDrawer(true);
+  updateSummary(ALL);
+}, 600);
   } catch (err) {
     console.error(err);
     drawerMsg.style.color = '#c0392b';
