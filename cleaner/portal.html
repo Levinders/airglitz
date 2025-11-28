@@ -1156,9 +1156,7 @@ btnLogout.addEventListener('click', () => {
 /* ---------------------------
    Helpers
    --------------------------- */
-function formatDateCell(v){
-  try { const d = new Date(v); if (isNaN(d)) return v; return d.toLocaleDateString(); } catch { return v; }
-}
+
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 /* ===============================
