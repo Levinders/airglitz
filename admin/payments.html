@@ -661,15 +661,19 @@
           <label>Property</label>
           <div class="field-pill" id="dwProperty"></div>
         </div>
-        <div class="group">
-          <label>Current Status</label>
-          <select id="dwStatus" disabled>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Cancelled">Cancelled</option>
-            <option value="Paid">Paid</option>
-          </select>
-        </div>
+        
+<div class="group">
+  <label>Current Status</label>
+  <select id="dwStatus">
+    <option value="Pending">Pending</option>
+    <option value="Approved">Approved</option>
+    <option value="Cancelled">Cancelled</option>
+    <option value="Paid">Paid</option>
+  </select>
+</div>
+
+
+        
       </div>
 
       <div class="drawer__section-title">Payment Details</div>
@@ -696,7 +700,7 @@
   <div class="drawer__actions">
     <button class="btn ghost" id="btnApproveOnly">
       <i class="fa-solid fa-check"></i>
-      Approve (no invoice)
+      Saved
     </button>
     <button class="btn primary" id="btnApprove">
       <i class="fa-solid fa-dollar-sign"></i>
@@ -1044,15 +1048,18 @@ async function approveFlow(mode) {
     return;
   }
 
-  const payload = {
-    action: 'adminApprovePayment',
-    requestId,
-    approvedAmount,
-    // ✅ markPaid true only when using Paid + Invoice
-    markPaid: (mode === 'paid'),
-    adminNote,
-    approver
-  };
+const newStatus = dwStatus.value || CURRENT.Status || 'Pending';
+
+const payload = {
+  action: 'adminApprovePayment',
+  requestId,
+  approvedAmount,
+  markPaid: (mode === 'paid'),
+  adminNote,
+  approver,
+  status: newStatus  // ✅ send manually selected status
+};
+
 
   drawerMsg.style.color = '#6c757d';
   drawerMsg.textContent = 'Saving…';
@@ -1075,7 +1082,7 @@ async function approveFlow(mode) {
     CURRENT['Amount'] = approvedAmount;
     CURRENT['Approved Amount'] = approvedAmount;
     CURRENT['Admin Note'] = adminNote;
-    CURRENT['Status'] = mode === 'paid' ? 'Paid' : 'Approved';
+    CURRENT['Status'] = newStatus;
 
     // ✅ Update table without full reload
     const row = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(4)`);
