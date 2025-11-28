@@ -426,6 +426,34 @@
     font-size:13px;
   }
 
+  .drawer__footer {
+  border-top: 1px solid var(--border);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--panel);
+}
+
+.drawer__msg-inline {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+  transition: color 0.25s ease, opacity 0.25s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 120px;
+}
+
+.drawer__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
   .btn-danger {
     background:#fee2e2;
     color:#b91c1c;
@@ -620,8 +648,6 @@
     </div>
 
     <div class="drawer__body">
-      <div id="drawerMsg"></div>
-
       <div class="drawer__grid">
         <div class="group">
           <label>Booking</label>
@@ -664,18 +690,24 @@
       </div>
     </div>
 
-    <div class="drawer__footer">
-      <button class="btn ghost" id="btnApproveOnly">
-        <i class="fa-solid fa-check"></i>
-        Save
-      </button>
-      <button class="btn primary" id="btnApprove">
-        <i class="fa-solid fa-dollar-sign"></i>
-        Paid + Invoice
-      </button>
-    </div>
-  </div>
+<div class="drawer__footer">
+  <div id="drawerMsg" class="drawer__msg-inline"></div>
 
+  <div class="drawer__actions">
+    <button class="btn ghost" id="btnApproveOnly">
+      <i class="fa-solid fa-check"></i>
+      Approve (no invoice)
+    </button>
+    <button class="btn primary" id="btnApprove">
+      <i class="fa-solid fa-dollar-sign"></i>
+      Paid + Invoice
+    </button>
+  </div>
+</div>
+
+
+    
+  </div>
   </div>
 
   <!-- ==========================
