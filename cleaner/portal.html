@@ -1046,31 +1046,6 @@ const isCompleted = (row['Status'] || '') === 'Completed';
   }
 })();
 
-
-    
-    // Insert at top of drawer body
-    const body = drawer.querySelector('.body');
-    const paymentSection = body.querySelector('#dwRequestAmount').closest('div');
-    body.insertBefore(notice, paymentSection);
-
-
-    // Disable both buttons
-    btnSaveStatus.classList.add('disabled');
-    btnSaveStatus.disabled = true;
-
-    btnRequestPayment.classList.add('disabled');
-    btnRequestPayment.disabled = true;
-  } else {
-    // Ensure they’re active if no payment exists
-    btnSaveStatus.classList.remove('disabled');
-    btnSaveStatus.disabled = false;
-
-    btnRequestPayment.classList.remove('disabled');
-    btnRequestPayment.disabled = false;
-  }
-})();
-
-
   document.getElementById('dwNotes').focus();
 }
 
