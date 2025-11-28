@@ -680,18 +680,20 @@ function formatDateCell(v) {
     const d = new Date(v);
     if (isNaN(d)) return v;
 
-    // ✅ Add +1 day
+    // ✅ Add +1 day for timezone correction
     d.setDate(d.getDate() + 1);
 
-    return d.toLocaleDateString('en-AU', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short'
-    });
+    // 🧭 Format: D/M/YYYY (no leading zeros)
+    const day = d.getDate();
+    const month = d.getMonth() + 1;
+    const year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
   } catch {
     return v;
   }
 }
+
 
   
 
