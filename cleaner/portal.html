@@ -1305,7 +1305,14 @@ function progressFinish() {
   token = localStorage.getItem(tokenKey);
   const cleanerName = localStorage.getItem('homeglitz_cleaner_name') || '';
   const cleanerId = localStorage.getItem('homeglitz_cleaner_id') || '';
-  if (!token || !cleanerId) return redirectToLogin();
+if (!token || !cleanerId) return redirectToLogin();
+else {
+  (async function(){
+    await loadPropertiesForPortal();
+    await loadTasks();
+  })();
+}
+
 
   // fill header/profile
   cleanerNameTop.textContent = cleanerName;
@@ -1313,11 +1320,6 @@ function progressFinish() {
   sideEmail.textContent = localStorage.getItem('homeglitz_cleaner_email') || '';
   navAvatar.textContent = (cleanerName || 'CL').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
   sideAvatar.textContent = navAvatar.textContent;
-
-(async function(){
-  await loadPropertiesForPortal();  // <-- IMPORTANT
-  await loadTasks();
-})();
 
 })();
 
