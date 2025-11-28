@@ -1020,7 +1020,9 @@ const isCompleted = (row['Status'] || '') === 'Completed';
     `;
     // Insert at top of drawer body
     const body = drawer.querySelector('.body');
-    body.insertBefore(notice, body.firstChild);
+    const paymentSection = body.querySelector('#dwRequestAmount').closest('div');
+    body.insertBefore(notice, paymentSection);
+
 
     // Disable both buttons
     btnSaveStatus.classList.add('disabled');
