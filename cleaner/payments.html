@@ -34,7 +34,7 @@ html,body{margin:0;height:100%;background:#f5faff;color:#111;}
 .header img{height:38px;border-radius:8px}
 .header-right{display:flex;align-items:center;gap:12px}
 
-.page {max-width:var(--max-w);margin:20px auto;padding:0 16px}
+.page {max-width:var(--max-w);margin:20px auto;padding:0 16px;padding-bottom:80px}
 .grid {display:grid;grid-template-columns:1fr 320px;gap:18px}
 @media(max-width:980px){.grid{grid-template-columns:1fr}.side{display:none}}
 
@@ -96,7 +96,7 @@ tr:hover td{background:#fbfdff}
 
 @media(max-width:650px){
   table{display:none}
-  .mobile-list{display:block;margin-top:12px}
+  .mobile-list{display:block;margin-top:12px;margin-bottom:60px}
 
   .mp-card{
     background:#fff;border-radius:14px;
@@ -108,7 +108,7 @@ tr:hover td{background:#fbfdff}
   .mp-row{display:flex;justify-content:space-between;margin:4px 0;font-size:14px}
   .mp-label{color:var(--muted)}
 }
-@media(min-width:651px){.mobile-list{display:none}}
+@media(min-width:651px){.mobile-list{display:none};margin-bottom:60px}
 
 .bottom-nav{
   position:fixed;left:0;right:0;bottom:0;
