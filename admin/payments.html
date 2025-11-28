@@ -1089,11 +1089,22 @@ const payload = {
     if (row) row.textContent = `$${approvedAmount.toFixed(2)}`;
 
     // ✅ Update status badge live
-    const statusBadge = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(6) .status-badge`);
-    if (statusBadge) {
-      statusBadge.className = `status-badge ${mode === 'paid' ? 's-paid' : 's-approved'}`;
-      statusBadge.textContent = mode === 'paid' ? 'Paid' : 'Approved';
-    }
+const statusBadge = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(6) .status-badge`);
+if (statusBadge) {
+  const cls =
+    newStatus === 'Paid'
+      ? 's-paid'
+      : newStatus === 'Approved'
+      ? 's-approved'
+      : newStatus === 'Pending'
+      ? 's-pending'
+      : 's-approved'; // fallback for Cancelled or others
+  statusBadge.className = `status-badge ${cls}`;
+  statusBadge.textContent = newStatus;
+  dwStatus.value = newStatus;
+
+}
+
 
     // ✅ Feedback + smooth refresh
     drawerMsg.style.color = '#16a34a';
