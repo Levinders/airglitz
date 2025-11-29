@@ -974,6 +974,9 @@ if (!BOOKINGS_CACHE) {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   });
+
+  console.log("🔍 BOOKINGS API RESPONSE →", await bookingsRes.clone().text());
+
   BOOKINGS_CACHE = await bookingsRes.json();
 }
 
