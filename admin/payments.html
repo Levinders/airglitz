@@ -984,13 +984,24 @@ if (bookingsJson && bookingsJson.data && Array.isArray(bookingsJson.data)) {
   bookingsJson = bookingsJson.data;
 }
 
-if (Array.isArray(bookingsJson)) {
-  const found = bookingsJson.find(b => String(b['Booking ID']) === String(bookingId));
+// Unwrap backend data structure if needed
+let bookingsData = bookingsJson;
+if (bookingsJson && bookingsJson.data && Array.isArray(bookingsJson.data)) {
+  bookingsData = bookingsJson.data;
+}
+
+if (Array.isArray(bookingsData)) {
+  const found = bookingsData.find(
+    b => String(b['Booking ID']).trim() === String(bookingId).trim()
+  );
   if (found) {
-    if (!propertyName) propertyName = found['Property Name'] || found['Property'] || '';
-    if (!cleanerName) cleanerName = found['Cleaner Name'] || found['Cleaners'] || '';
+    if (!propertyName)
+      propertyName = found['Property Name'] || found['Property'] || '';
+    if (!cleanerName)
+      cleanerName = found['Cleaner Name'] || found['Cleaners'] || '';
   }
 }
+
      
     } catch (err) {
       console.warn('Booking info lookup failed', err);
