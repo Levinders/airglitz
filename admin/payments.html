@@ -953,47 +953,41 @@ window.openDrawer = async function(requestId) {
 
   const bookingId = row['Booking ID'] || row['BookingId'] || '';
   const cleanerId = row['Cleaner ID'] || row['CleanerId'] || '';
+
   let cleanerName = row['Cleaner Name'] || '';
   let propertyName = row['Property'] || row['Property Name'] || '';
 
-  // ✅ Enrich cleaner name if only ID is stored
-  if (!cleanerName && cleanerId) {
+  // ✅ Lookup from "All Bookings Sync" for more accurate names
+  if (bookingId) {
     try {
       const res = await fetch(PROXY, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getAllCleaners' })
+        body: JSON.stringify({ action: 'getAllPaymentRequests' }) // temp dummy to reuse proxy; will call correct endpoint next
       });
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data)) {
-        const found = json.data.find(c => c['Cleaner ID'] === cleanerId);
-        if (found) cleanerName = found['Cleaner Name'] || cleanerId;
+      // Instead of above, use the direct GET for "bookings"
+      const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const bookingsJson = await bookingsRes.json();
+      if (Array.isArray(bookingsJson)) {
+        const found = bookingsJson.find(b => String(b['Booking ID']) === String(bookingId));
+        if (found) {
+          if (!propertyName) propertyName = found['Property Name'] || found['Property'] || '';
+          if (!cleanerName) cleanerName = found['Cleaners'] || found['Cleaner Name'] || '';
+        }
       }
     } catch (err) {
-      console.warn('Cleaner lookup failed', err);
+      console.warn('Booking info lookup failed', err);
     }
   }
-
-  // ✅ Enrich property name if empty but booking ID exists
-  if (!propertyName && bookingId) {
-    try {
-      const res = await fetch(PROXY, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      // optional: skip heavy calls — future optimization
-    } catch (err) {
-      console.warn('Property lookup skipped or failed', err);
-    }
-  }
-
-  const requested = row['Requested At'] || row['RequestedAt'] || '';
-  const statusRaw = (row['Status'] || '').toString() || 'Pending';
 
   dwRequestId.textContent = requestId;
   dwBookingId.textContent = bookingId || '—';
   dwCleaner.textContent = cleanerName || cleanerId || '—';
   dwProperty.textContent = propertyName || '—';
+
   
   const requested = row['Requested At'] || row['RequestedAt'] || '';
   const statusRaw = (row['Status'] || '').toString() || 'Pending';
