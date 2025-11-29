@@ -1196,9 +1196,19 @@ function formatDate(v) {
 }
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-/* initial load */
-loadRequests();
 
+    
+window.addEventListener('DOMContentLoaded', async () => {
+  loadRequests();
+
+  // Preload All Bookings Sync (so first drawer opens instantly)
+  try {
+    const res = await fetch(`${PROXY}?type=bookings`);
+    BOOKINGS_CACHE = await res.json();
+  } catch (err) {
+    console.warn('Preload All Bookings failed', err);
+  }
+});
     
   </script>
 </body>
