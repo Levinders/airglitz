@@ -921,7 +921,7 @@ function renderTable(rows) {
       <td>$${amount}</td>
       <td>${when}</td>
       <td><span class="status-badge ${statusClass}">${status}</span></td>
-      <td><button class="btn ghost" onclick="openDrawer('${req}')"><i class="fa-solid fa-ellipsis"></i> Details</button></td>
+      <td><button class="btn ghost" onclick="openDrawer('${req}')"><i class="fa fa-edit"></i></button></td>
     </tr>`;
   }).join('');
   tbody.innerHTML = html;
