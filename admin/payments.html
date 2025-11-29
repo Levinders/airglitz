@@ -610,7 +610,7 @@
               <th>Request</th>
               <th>Property</th>
               <th>Cleaner</th>
-              <th>Amount($)</th>
+              <th>Amount ($)</th>
               <th>Requested At</th>
               <th>Status</th>
               <th>Actions</th>
@@ -1220,18 +1220,17 @@ function formatDate(v) {
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 
-    
-window.addEventListener('DOMContentLoaded', async () => {
-  loadRequests();
-
-  // Preload All Bookings Sync (so first drawer opens instantly)
+    window.addEventListener('DOMContentLoaded', async () => {
   try {
     const res = await fetch(`${PROXY}?type=bookings`);
     BOOKINGS_CACHE = await res.json();
   } catch (err) {
     console.warn('Preload All Bookings failed', err);
   }
+  await loadRequests(); // ⬅ move this *after* preload
 });
+
+
     
   </script>
 </body>
