@@ -974,51 +974,8 @@ let BOOKINGS_CACHE = null;
   enhanceDrawerInfo(bookingId, cleanerName, propertyName, row);
 };
 
-    window.openDrawer = async function(requestId) {
-  ...
-  enhanceDrawerInfo(bookingId, cleanerName, propertyName, row);
-};
 
 /* helper: enhance drawer details in background */
-async function enhanceDrawerInfo(bookingId, cleanerName, propertyName, row) {
-  try {
-    if (!bookingId) return;
-
-    if (!BOOKINGS_CACHE) {
-      const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      BOOKINGS_CACHE = await bookingsRes.json();
-    }
-
-    let data = BOOKINGS_CACHE;
-    if (data && data.data && Array.isArray(data.data)) data = data.data;
-
-    const found = Array.isArray(data)
-      ? data.find(b => String(b['Booking ID']).trim() === String(bookingId).trim())
-      : null;
-
-    if (found) {
-      const p = found['Property Name'] || found['Property'] || propertyName;
-      const c = found['Cleaner Name'] || found['Cleaners'] || cleanerName;
-
-      dwCleaner.textContent = c || '—';
-      dwProperty.textContent = p || '—';
-
-      const requested = row['Requested At'] || row['RequestedAt'] || '';
-      const parts = [];
-      if (requested) parts.push(`<i class="fa-regular fa-clock"></i> ${formatDate(requested)}`);
-      if (c) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-user"></i> ${escapeHtml(c)}`);
-      if (p) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-house"></i> ${escapeHtml(p)}`);
-      dwMeta.innerHTML = parts.join(' ');
-    }
-  } catch (err) {
-    console.warn('Background drawer info fetch failed', err);
-  }
-}
-
-
     async function enhanceDrawerInfo(bookingId, cleanerName, propertyName, row) {
   try {
     if (!bookingId) return;
