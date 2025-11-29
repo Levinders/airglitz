@@ -1140,11 +1140,11 @@ const payload = {
   action: 'adminApprovePayment',
   requestId,
   approvedAmount,
-  markPaid: (mode === 'paid'),
   adminNote,
   approver,
-  status: newStatus  // ✅ send manually selected status
+  status: mode === 'paid' ? 'Paid' : newStatus   // ✅ forces “Paid” for the Paid + Invoice button
 };
+
 
 
 
@@ -1199,7 +1199,7 @@ if (statusBadge) {
     drawerMsg.textContent = 'Updated successfully';
 setTimeout(() => {
   closeDrawer(true);
-  updateSummary(ALL);
+  loadRequests();   // ensures updated status + PDF URL show instantly
 }, 600);
   } catch (err) {
     console.error(err);
