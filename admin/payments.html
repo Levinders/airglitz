@@ -967,6 +967,8 @@ window.openDrawer = async function(requestId) {
         body: JSON.stringify({ action: 'getAllPaymentRequests' }) // temp dummy to reuse proxy; will call correct endpoint next
       });
       // Instead of above, use the direct GET for "bookings"
+
+      
 if (!BOOKINGS_CACHE) {
   const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
     method: 'GET',
@@ -974,17 +976,22 @@ if (!BOOKINGS_CACHE) {
   });
   BOOKINGS_CACHE = await bookingsRes.json();
 }
-const bookingsJson = BOOKINGS_CACHE;
 
+let bookingsJson = BOOKINGS_CACHE;
 
-      
-      if (Array.isArray(bookingsJson)) {
-        const found = bookingsJson.find(b => String(b['Booking ID']) === String(bookingId));
-        if (found) {
-          if (!propertyName) propertyName = found['Property Name'] || found['Property'] || '';
-          if (!cleanerName) cleanerName = found['Cleaners'] || found['Cleaner Name'] || '';
-        }
-      }
+// Some backends wrap data inside { success, data }
+if (bookingsJson && bookingsJson.data && Array.isArray(bookingsJson.data)) {
+  bookingsJson = bookingsJson.data;
+}
+
+if (Array.isArray(bookingsJson)) {
+  const found = bookingsJson.find(b => String(b['Booking ID']) === String(bookingId));
+  if (found) {
+    if (!propertyName) propertyName = found['Property Name'] || found['Property'] || '';
+    if (!cleanerName) cleanerName = found['Cleaner Name'] || found['Cleaners'] || '';
+  }
+}
+     
     } catch (err) {
       console.warn('Booking info lookup failed', err);
     }
