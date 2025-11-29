@@ -894,6 +894,12 @@ function updateSummary(list) {
 }
 
 /* render table rows */
+    function renderTable(rows) {
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">No payment requests</td></tr>';
+    return;
+  }
+      
   const html = rows.map(r => {
     const req = escapeHtml(r['Request ID'] || r['RequestId'] || '');
     const bookingId = r['Booking ID'] || r['BookingId'] || '';
