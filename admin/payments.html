@@ -942,6 +942,7 @@ function applyFilters() {
 }
 
 /* open drawer */
+let BOOKINGS_CACHE = null;
 window.openDrawer = async function(requestId) {
   drawerMsg.textContent = '';
   const row = ALL.find(r => (r['Request ID']||r['RequestId']||'') === requestId);
@@ -966,11 +967,17 @@ window.openDrawer = async function(requestId) {
         body: JSON.stringify({ action: 'getAllPaymentRequests' }) // temp dummy to reuse proxy; will call correct endpoint next
       });
       // Instead of above, use the direct GET for "bookings"
-      const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const bookingsJson = await bookingsRes.json();
+if (!BOOKINGS_CACHE) {
+  const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  BOOKINGS_CACHE = await bookingsRes.json();
+}
+const bookingsJson = BOOKINGS_CACHE;
+
+
+      
       if (Array.isArray(bookingsJson)) {
         const found = bookingsJson.find(b => String(b['Booking ID']) === String(bookingId));
         if (found) {
