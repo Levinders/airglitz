@@ -944,7 +944,8 @@ function applyFilters() {
 
 /* open drawer */
 let BOOKINGS_CACHE = null;
-window.openDrawer = async function(requestId) {
+
+    window.openDrawer = async function(requestId) {
   drawerMsg.textContent = '';
   const row = ALL.find(r => (r['Request ID']||r['RequestId']||'') === requestId);
   if (!row) {
@@ -953,96 +954,108 @@ window.openDrawer = async function(requestId) {
   }
   CURRENT = row;
 
+  // Instantly show basic info (no delay)
   const bookingId = row['Booking ID'] || row['BookingId'] || '';
   const cleanerId = row['Cleaner ID'] || row['CleanerId'] || '';
-
-  let cleanerName = row['Cleaner Name'] || '';
-  let propertyName = row['Property'] || row['Property Name'] || '';
-
-  // ✅ Lookup from "All Bookings Sync" for more accurate names
-  if (bookingId) {
-    try {
-      const res = await fetch(PROXY, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getAllPaymentRequests' }) // temp dummy to reuse proxy; will call correct endpoint next
-      });
-      // Instead of above, use the direct GET for "bookings"
-
-      
-if (!BOOKINGS_CACHE) {
-  const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  });
-
-  console.log("🔍 BOOKINGS API RESPONSE →", await bookingsRes.clone().text());
-
-  BOOKINGS_CACHE = await bookingsRes.json();
-}
-
-let bookingsJson = BOOKINGS_CACHE;
-
-// Some backends wrap data inside { success, data }
-if (bookingsJson && bookingsJson.data && Array.isArray(bookingsJson.data)) {
-  bookingsJson = bookingsJson.data;
-}
-
-// Unwrap backend data structure if needed
-let bookingsData = bookingsJson;
-if (bookingsJson && bookingsJson.data && Array.isArray(bookingsJson.data)) {
-  bookingsData = bookingsJson.data;
-}
-
-if (Array.isArray(bookingsData)) {
-  const found = bookingsData.find(
-    b => String(b['Booking ID']).trim() === String(bookingId).trim()
-  );
-  if (found) {
-    if (!propertyName)
-      propertyName = found['Property Name'] || found['Property'] || '';
-    if (!cleanerName)
-      cleanerName = found['Cleaner Name'] || found['Cleaners'] || '';
-  }
-}
-
-     
-    } catch (err) {
-      console.warn('Booking info lookup failed', err);
-    }
-  }
+  const cleanerName = row['Cleaner Name'] || cleanerId || '—';
+  const propertyName = row['Property'] || row['Property Name'] || '—';
 
   dwRequestId.textContent = requestId;
   dwBookingId.textContent = bookingId || '—';
-  dwCleaner.textContent = cleanerName || cleanerId || '—';
-  dwProperty.textContent = propertyName || '—';
+  dwCleaner.textContent = cleanerName;
+  dwProperty.textContent = propertyName;
 
-  
-  const requested = row['Requested At'] || row['RequestedAt'] || '';
-  const statusRaw = (row['Status'] || '').toString() || 'Pending';
-
-  dwRequestId.textContent = requestId;
-  dwBookingId.textContent = bookingId || '—';
-  dwCleaner.textContent = cleanerName || '—';
-  dwProperty.textContent = propertyName || '—';
-
-  const parts = [];
-  if (requested) parts.push(`<i class="fa-regular fa-clock"></i> ${formatDate(requested)}`);
-  if (cleanerName) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-user"></i> ${escapeHtml(cleanerName)}`);
-  if (propertyName) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-house"></i> ${escapeHtml(propertyName)}`);
-  dwMeta.innerHTML = parts.join(' ');
-
-  dwAmount.value = (row['Amount'] || row['Approved Amount'] || 0);
-  dwStatus.value = statusRaw === 'Paid' ? 'Paid' : (['Pending','Approved','Cancelled'].includes(statusRaw) ? statusRaw : 'Pending');
-  dwAdminNote.value = row['Admin Note'] || '';
-
-  const isPaid = statusRaw === 'Paid';
-  setPaidMode(isPaid);
-
+  // Show drawer immediately
   drawer.classList.add('active');
   drawerOverlay.classList.add('active');
   drawer.setAttribute('aria-hidden', 'false');
+
+  // Load remaining details async (no blocking)
+  enhanceDrawerInfo(bookingId, cleanerName, propertyName, row);
 };
+
+    window.openDrawer = async function(requestId) {
+  ...
+  enhanceDrawerInfo(bookingId, cleanerName, propertyName, row);
+};
+
+/* helper: enhance drawer details in background */
+async function enhanceDrawerInfo(bookingId, cleanerName, propertyName, row) {
+  try {
+    if (!bookingId) return;
+
+    if (!BOOKINGS_CACHE) {
+      const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      BOOKINGS_CACHE = await bookingsRes.json();
+    }
+
+    let data = BOOKINGS_CACHE;
+    if (data && data.data && Array.isArray(data.data)) data = data.data;
+
+    const found = Array.isArray(data)
+      ? data.find(b => String(b['Booking ID']).trim() === String(bookingId).trim())
+      : null;
+
+    if (found) {
+      const p = found['Property Name'] || found['Property'] || propertyName;
+      const c = found['Cleaner Name'] || found['Cleaners'] || cleanerName;
+
+      dwCleaner.textContent = c || '—';
+      dwProperty.textContent = p || '—';
+
+      const requested = row['Requested At'] || row['RequestedAt'] || '';
+      const parts = [];
+      if (requested) parts.push(`<i class="fa-regular fa-clock"></i> ${formatDate(requested)}`);
+      if (c) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-user"></i> ${escapeHtml(c)}`);
+      if (p) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-house"></i> ${escapeHtml(p)}`);
+      dwMeta.innerHTML = parts.join(' ');
+    }
+  } catch (err) {
+    console.warn('Background drawer info fetch failed', err);
+  }
+}
+
+
+    async function enhanceDrawerInfo(bookingId, cleanerName, propertyName, row) {
+  try {
+    if (!bookingId) return;
+
+    if (!BOOKINGS_CACHE) {
+      const bookingsRes = await fetch(`${PROXY}?type=bookings`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      BOOKINGS_CACHE = await bookingsRes.json();
+    }
+
+    let data = BOOKINGS_CACHE;
+    if (data && data.data && Array.isArray(data.data)) data = data.data;
+
+    const found = Array.isArray(data)
+      ? data.find(b => String(b['Booking ID']).trim() === String(bookingId).trim())
+      : null;
+
+    if (found) {
+      const p = found['Property Name'] || found['Property'] || propertyName;
+      const c = found['Cleaner Name'] || found['Cleaners'] || cleanerName;
+
+      dwCleaner.textContent = c || '—';
+      dwProperty.textContent = p || '—';
+
+      const requested = row['Requested At'] || row['RequestedAt'] || '';
+      const parts = [];
+      if (requested) parts.push(`<i class="fa-regular fa-clock"></i> ${formatDate(requested)}`);
+      if (c) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-user"></i> ${escapeHtml(c)}`);
+      if (p) parts.push(`<span class="meta-dot"></span><i class="fa-solid fa-house"></i> ${escapeHtml(p)}`);
+      dwMeta.innerHTML = parts.join(' ');
+    }
+  } catch (err) {
+    console.warn('Background drawer info fetch failed', err);
+  }
+}
 
 /* helper: lock/unlock UI when Paid */
 function setPaidMode(isPaid) {
@@ -1197,9 +1210,18 @@ function formatDate(v) {
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 /* initial load */
-loadRequests();
+window.addEventListener('DOMContentLoaded', async () => {
+  loadRequests();
 
-    
-  </script>
+  // Preload All Bookings Sync (so first drawer opens instantly)
+  try {
+    const res = await fetch(`${PROXY}?type=bookings`);
+    BOOKINGS_CACHE = await res.json();
+  } catch (err) {
+    console.warn('Preload All Bookings failed', err);
+  }
+});
+
+</script>
 </body>
 </html>
