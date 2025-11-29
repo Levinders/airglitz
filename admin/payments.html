@@ -902,8 +902,13 @@ function renderTable(rows) {
 
   const html = rows.map(r => {
     const req = escapeHtml(r['Request ID'] || r['RequestId'] || '');
-    const booking = escapeHtml(r['Booking ID'] || r['BookingId'] || '');
-    const cleaner = escapeHtml(r['Cleaner Name'] || r['Cleaner'] || r['Cleaner ID'] || r['CleanerId'] || '');
+
+    // 🏠 Property replaces "Booking" column
+    const property = escapeHtml(r['Property Name'] || r['Property'] || '');
+
+    // 👤 Cleaner Name stays as actual name (not ID)
+    const cleaner = escapeHtml(r['Cleaner Name'] || r['Cleaner'] || '');
+
     const amount = Number(r['Amount'] || r['Approved Amount'] || 0).toFixed(2);
     const when = r['Requested At'] ? formatDate(r['Requested At']) : (r['RequestedAt'] || '');
     const statusRaw = (r['Status']||'').toString();
@@ -915,10 +920,11 @@ function renderTable(rows) {
       : status === 'Paid'
       ? 's-paid'
       : 's-approved';
+
     return `<tr data-req="${req}">
       <td>${req}</td>
-      <td>${booking}</td>
-      <td>${cleaner}</td>
+      <td>${property || '—'}</td>
+      <td>${cleaner || '—'}</td>
       <td>$${amount}</td>
       <td>${when}</td>
       <td><span class="status-badge ${statusClass}">${status}</span></td>
@@ -927,6 +933,7 @@ function renderTable(rows) {
   }).join('');
   tbody.innerHTML = html;
 }
+
 
 /* filtering */
 function applyFilters() {
