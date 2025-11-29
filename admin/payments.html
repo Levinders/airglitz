@@ -1140,9 +1140,12 @@ const payload = {
   action: 'adminApprovePayment',
   requestId,
   approvedAmount,
+  markPaid: (mode === 'paid'),
+  adminNote,
   approver,
-  status: mode === 'paid' ? 'Paid' : newStatus  // ✅ Force "Paid" when using the Paid + Invoice button
+  status: newStatus  // ✅ send manually selected status
 };
+
 
 
 
