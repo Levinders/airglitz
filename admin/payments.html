@@ -597,7 +597,7 @@
           </div>
 
           <div class="right-controls">
-            <button class="btn ghost" id="btnRefresh" style="text-color:#FFFFFF;background:#0F72B4;"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+            <button class="btn ghost" id="btnRefresh" style="color:#FFFFFF;background:#0F72B4;"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
           </div>
         </div>
       </div>
@@ -942,7 +942,7 @@ function applyFilters() {
 }
 
 /* open drawer */
-window.openDrawer = function(requestId) {
+window.openDrawer = async function(requestId) {
   drawerMsg.textContent = '';
   const row = ALL.find(r => (r['Request ID']||r['RequestId']||'') === requestId);
   if (!row) {
@@ -952,8 +952,49 @@ window.openDrawer = function(requestId) {
   CURRENT = row;
 
   const bookingId = row['Booking ID'] || row['BookingId'] || '';
-  const cleanerName = row['Cleaner Name'] || row['Cleaner'] || row['Cleaner ID'] || row['CleanerId'] || '';
-  const propertyName = row['Property'] || row['Property Name'] || '';
+  const cleanerId = row['Cleaner ID'] || row['CleanerId'] || '';
+  let cleanerName = row['Cleaner Name'] || '';
+  let propertyName = row['Property'] || row['Property Name'] || '';
+
+  // ✅ Enrich cleaner name if only ID is stored
+  if (!cleanerName && cleanerId) {
+    try {
+      const res = await fetch(PROXY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'getAllCleaners' })
+      });
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data)) {
+        const found = json.data.find(c => c['Cleaner ID'] === cleanerId);
+        if (found) cleanerName = found['Cleaner Name'] || cleanerId;
+      }
+    } catch (err) {
+      console.warn('Cleaner lookup failed', err);
+    }
+  }
+
+  // ✅ Enrich property name if empty but booking ID exists
+  if (!propertyName && bookingId) {
+    try {
+      const res = await fetch(PROXY, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      // optional: skip heavy calls — future optimization
+    } catch (err) {
+      console.warn('Property lookup skipped or failed', err);
+    }
+  }
+
+  const requested = row['Requested At'] || row['RequestedAt'] || '';
+  const statusRaw = (row['Status'] || '').toString() || 'Pending';
+
+  dwRequestId.textContent = requestId;
+  dwBookingId.textContent = bookingId || '—';
+  dwCleaner.textContent = cleanerName || cleanerId || '—';
+  dwProperty.textContent = propertyName || '—';
+  
   const requested = row['Requested At'] || row['RequestedAt'] || '';
   const statusRaw = (row['Status'] || '').toString() || 'Pending';
 
