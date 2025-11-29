@@ -608,7 +608,7 @@
           <thead>
             <tr>
               <th>Request</th>
-              <th>Booking</th>
+              <th>Property</th>
               <th>Cleaner</th>
               <th>Amount (-GST)</th>
               <th>Requested At</th>
@@ -894,20 +894,30 @@ function updateSummary(list) {
 }
 
 /* render table rows */
-function renderTable(rows) {
-  if (!rows || rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">No payment requests</td></tr>';
-    return;
-  }
-
   const html = rows.map(r => {
     const req = escapeHtml(r['Request ID'] || r['RequestId'] || '');
+    const bookingId = r['Booking ID'] || r['BookingId'] || '';
 
-    // 🏠 Property replaces "Booking" column
-    const property = escapeHtml(r['Property Name'] || r['Property'] || '');
+    let property = r['Property Name'] || r['Property'] || '';
+    let cleaner = r['Cleaner Name'] || r['Cleaner'] || '';
 
-    // 👤 Cleaner Name stays as actual name (not ID)
-    const cleaner = escapeHtml(r['Cleaner Name'] || r['Cleaner'] || '');
+    // ✅ Lookup missing names from BOOKINGS_CACHE
+    if ((!property || !cleaner) && BOOKINGS_CACHE) {
+      let data = BOOKINGS_CACHE;
+      if (data && data.data && Array.isArray(data.data)) data = data.data;
+
+      const found = Array.isArray(data)
+        ? data.find(b => String(b['Booking ID']).trim() === String(bookingId).trim())
+        : null;
+
+      if (found) {
+        if (!property) property = found['Property Name'] || found['Property'] || '';
+        if (!cleaner) cleaner = found['Cleaner Name'] || found['Cleaners'] || '';
+      }
+    }
+
+    property = escapeHtml(property || '—');
+    cleaner = escapeHtml(cleaner || '—');
 
     const amount = Number(r['Amount'] || r['Approved Amount'] || 0).toFixed(2);
     const when = r['Requested At'] ? formatDate(r['Requested At']) : (r['RequestedAt'] || '');
