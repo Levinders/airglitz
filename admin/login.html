@@ -168,7 +168,7 @@ function adminLogin() {
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     localStorage.setItem("airglitzAdminAuth", "true");
-    window.location.href = "cleaners.html";
+    window.location.href = "cleaners";
   } else {
     alert("Invalid admin credentials");
   }
