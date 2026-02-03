@@ -407,7 +407,7 @@
   <script>
         // ========= Admin Gate =========
 if (localStorage.getItem("airglitzAdminAuth") !== "true") {
-  window.location.href = "login.html";
+  window.location.href = "login";
 }
 
 
@@ -434,7 +434,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 
   setTimeout(() => {
     localStorage.removeItem("airglitzAdminAuth");
-    window.location.href = "login.html";
+    window.location.href = "login";
   }, 400);
 });
 
