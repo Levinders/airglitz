@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>HomeGlitz — Admin Login</title>
+<title>AirGlitz — Admin Login</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -143,7 +143,7 @@
 <div class="login-box">
 
   <div class="logo">
-    <img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/mainlogog-removebg-preview.png" alt="HomeGlitz Logo">
+    <img src="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png" alt="AirGlitz Logo">
   </div>
 
   <h2><i class="fa-solid fa-shield-alt"></i> Admin Login</h2>
@@ -163,11 +163,11 @@ function adminLogin() {
   const email = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPassword').value.trim();
 
-  const ADMIN_EMAIL = "admin@homeglitz.com";
-  const ADMIN_PASSWORD = "superadmin123";
+  const ADMIN_EMAIL = "admin@homeglitz.com.au";
+  const ADMIN_PASSWORD = "superadmin@M123";
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    localStorage.setItem("homeglitzAdminAuth", "true");
+    localStorage.setItem("airglitzAdminAuth", "true");
     window.location.href = "cleaners.html";
   } else {
     alert("Invalid admin credentials");
