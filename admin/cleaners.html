@@ -535,6 +535,15 @@ async function saveCleaner() {
     active: document.getElementById('cleanerActive').value || 'Yes'
   };
 
+  // ✅ Detect new vs existing cleaner
+  const isNew = !payload.cleanerId;
+
+  // ✅ Require password ONLY for new cleaners
+  if (isNew && !payload.password) {
+    showToast("Password is required for new cleaners");
+    return;
+  }
+
   const res = await fetch(scriptBaseURL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -549,7 +558,7 @@ async function saveCleaner() {
   }
 
   closeDrawer();
-  showToast("Cleaner saved");
+  showToast(isNew ? "Cleaner added" : "Cleaner updated");
   setTimeout(loadCleaners, 800);
 }
 
