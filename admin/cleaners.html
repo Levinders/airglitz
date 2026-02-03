@@ -537,33 +537,20 @@ async function saveCleaner() {
     active: document.getElementById('cleanerActive').value || 'Yes'
   };
 
-  // Save to backend
-  await fetch(scriptBaseURL, { 
-    method: 'POST', 
-    headers: { 'Content-Type': 'application/json' }, 
-    body: JSON.stringify(payload) 
-  });
 
-  // ⭐ NEW EMAIL TRIGGER ⭐
-  if (isNew) {
-    const emailPayload = {
-      action: 'sendCleanerWelcome',
-      name: payload.name,
-      email: payload.email,
-      password: payload.password
-    };
+const res = await fetch(scriptBaseURL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload)
+});
 
-    await fetch(scriptBaseURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(emailPayload)
-    });
-  }
+const result = await res.json();
 
-  closeDrawer();
-  showToast('Cleaner saved');
-  setTimeout(loadCleaners, 800);
+if (!result.success) {
+  showToast(result.message || "Save failed");
+  return;
 }
+
 
 
   async function deleteCleaner(id) {
