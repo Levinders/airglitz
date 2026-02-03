@@ -324,8 +324,8 @@
         <i class="fa-solid fa-chevron-down" style="margin-left:auto;"></i>
       </a>
       <div class="sub-menu" style="display:flex;">
-        <a href="booking.html" class="active">Create New</a>
-        <a href="all-bookings.html">All Bookings</a>
+        <a href="booking" class="active">Create New</a>
+        <a href="all-bookings">All Bookings</a>
       </div>
     </li>
 
@@ -438,7 +438,7 @@
 
       // ========= Admin Gate =========
 if (localStorage.getItem("airglitzAdminAuth") !== "true") {
-  window.location.href = "login.html";
+  window.location.href = "login";
 }
 
   // Toggle logout dropdown
@@ -464,7 +464,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 
   setTimeout(() => {
     localStorage.removeItem("airglitzAdminAuth");
-    window.location.href = "login.html";
+    window.location.href = "login";
   }, 400);
 });
 
