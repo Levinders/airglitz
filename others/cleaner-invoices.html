@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>HomeGlitz — My Payments</title>
-<link rel="icon" href="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/64%C3%9764pxlogo.png"/>
+<title>AirGlitz — My Payments</title>
+<link rel="icon" href="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -118,7 +118,7 @@ tr:hover td { background:#f9fafc; }
 <!-- HEADER -->
 <div class="header">
   <div class="logo">
-    <img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/mainlogog-removebg-preview.png">
+    <img src="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png">
     My Payments
   </div>
 
@@ -153,17 +153,17 @@ tr:hover td { background:#f9fafc; }
 const WORKER_URL = "https://homeglitz.raphaellevinders.workers.dev/";  // <---- IMPORTANT: replace
 
 function redirectToLogin() {
-  localStorage.removeItem('homeglitz_cleaner_token');
-  window.location.href = "/homeglitz/cleaner-login.html";
+  localStorage.removeItem('airglitz_cleaner_token');
+  window.location.href = "cleaner-login";
 }
 
 /* ----------------------------------------------------------
    LOAD INVOICES
 ----------------------------------------------------------- */
 async function loadInvoices() {
-  const token = localStorage.getItem('homeglitz_cleaner_token');
-  const cleanerId = localStorage.getItem('homeglitz_cleaner_id');
-  const cleanerName = localStorage.getItem('homeglitz_cleaner_name');
+  const token = localStorage.getItem('airglitz_cleaner_token');
+  const cleanerId = localStorage.getItem('airglitz_cleaner_id');
+  const cleanerName = localStorage.getItem('airglitz_cleaner_name');
 
   if (!token || !cleanerId) return redirectToLogin();
 
