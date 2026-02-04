@@ -390,6 +390,7 @@
       <div class="group"><label>Password</label><input id="cleanerPassword" type="text"></div>
       <div class="group"><label>Bio / Notes</label><input id="cleanerNotes"></div>
       <div class="group"><label>Active (Yes/No)</label><input id="cleanerActive"></div>
+      
 
     </div>
 
@@ -472,9 +473,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
     document.getElementById('cleanerPassword').value = cleaner?.['Password'] || '';
     document.getElementById('cleanerNotes').value = cleaner?.['Notes'] || '';
     document.getElementById('cleanerActive').value = (cleaner?.['Active'] === true || cleaner?.['Active'] === "Yes") ? 'Yes' : 'No';
-    document.getElementById('cleanerJobs').value = cleaner?.['Total Jobs Completed'] || 0;
-    document.getElementById('cleanerEarnings').value = cleaner?.['Total Earnings (Ex GST)'] || 0;
-    document.getElementById('cleanerOutstanding').value = cleaner?.['Outstanding Balance'] || 0;
+
 
     drawerAvatar.textContent = cleaner ? initials(cleaner['Cleaner Name']) : "CL";
     drawer.classList.add('active');
