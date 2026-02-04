@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>HomeGlitz — Payments</title>
-<link rel="icon" href="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/64%C3%9764pxlogo.png" />
+<title>AirGlitz — Payments</title>
+<link rel="icon" href="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -520,11 +520,11 @@
        ========================== -->
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/mainlogog-removebg-preview.png">
+      <img src="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png">
     </div>
 
     <ul class="nav-links">
-      <li><a href="/homeglitz/others/admin-404-page.html"><i class="fa-solid fa-chart-line"></i> Overview</a></li>
+      <li><a href="/others/admin-404-page"><i class="fa-solid fa-chart-line"></i> Overview</a></li>
 
       <li class="nav-item">
         <a href="#" id="bookingMenu">
@@ -532,16 +532,16 @@
           <i class="fa-solid fa-chevron-down" style="margin-left:auto;"></i>
         </a>
         <div class="sub-menu">
-          <a href="booking.html">Create New</a>
-          <a href="all-bookings.html">All Bookings</a>
+          <a href="booking">Create New</a>
+          <a href="all-bookings">All Bookings</a>
         </div>
       </li>
 
-      <li><a href="/homeglitz/admin/payments.html" class="active"><i class="fa-solid fa-wallet"></i> Payments</a></li>
-      <li><a href="/homeglitz/others/admin-404-page.html"><i class="fa-solid fa-house-user"></i> Properties</a></li>
-      <li><a href="/homeglitz/admin/cleaners.html"><i class="fa-solid fa-users"></i> Cleaners</a></li>
-      <li><a href="/homeglitz/others/admin-404-page.html"><i class="fa-solid fa-chart-pie"></i> Reports</a></li>
-      <li><a href="/homeglitz/others/admin-404-page.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+      <li><a href="/admin/payments" class="active"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+      <li><a href="/others/admin-404-page"><i class="fa-solid fa-house-user"></i> Properties</a></li>
+      <li><a href="/admin/cleaners"><i class="fa-solid fa-users"></i> Cleaners</a></li>
+      <li><a href="/others/admin-404-page"><i class="fa-solid fa-chart-pie"></i> Reports</a></li>
+      <li><a href="/others/admin-404-page"><i class="fa-solid fa-gear"></i> Settings</a></li>
     </ul>
   </aside>
 
@@ -719,8 +719,8 @@
        ========================== -->
   <script>
     // ========= Admin Gate =========
-if (localStorage.getItem("homeglitzAdminAuth") !== "true") {
-  window.location.href = "login.html";
+if (localStorage.getItem("airglitzAdminAuth") !== "true") {
+  window.location.href = "login";
 }
 
     // Toggle logout dropdown
@@ -745,8 +745,8 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   document.body.style.opacity = "0";
 
   setTimeout(() => {
-    localStorage.removeItem("homeglitzAdminAuth");
-    window.location.href = "login.html";
+    localStorage.removeItem("airglitzAdminAuth");
+    window.location.href = "login";
   }, 400);
 });
 
