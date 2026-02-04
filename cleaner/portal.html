@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>HomeGlitz — Cleaner Portal</title>
-<link rel="icon" href="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/64%C3%9764pxlogo.png"/>
+<title>AirGlitz — Cleaner Portal</title>
+<link rel="icon" href="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -432,7 +432,7 @@
 
 <!-- Header -->
 <header class="header">
-  <div class="brand"><img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/mainlogog-removebg-preview.png" alt="HomeGlitz logo"></div>
+  <div class="brand"><img src="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png" alt="AirGlitz logo"></div>
   <div class="header-right">
     <div id="navAvatar" style="display:none"></div>
     <div style="font-size:14px;color:var(--muted);" id="cleanerNameTop"></div>
@@ -507,8 +507,8 @@
         </div>
       </div>
       <nav>
-        <a href="/homeglitz/cleaner/payments.html"><i class="fa-solid fa-wallet" style="margin-right:8px"></i> Payments</a>
-        <a href="/homeglitz/others/cleaner-invoices.html"><i class="fa-solid fa-file-invoice" style="margin-right:10px"></i> Invoices</a>
+        <a href="/cleaner/payments"><i class="fa-solid fa-wallet" style="margin-right:8px"></i> Payments</a>
+        <a href="/others/cleaner-invoices"><i class="fa-solid fa-file-invoice" style="margin-right:10px"></i> Invoices</a>
       </nav>
     </aside>
   </div>
@@ -652,8 +652,8 @@
 <!-- Mobile bottom nav -->
 <nav class="bottom-nav" role="navigation" aria-label="Primary">
   <a href="#" class="active"><i class="fa-solid fa-list-check"></i><div style="font-size:12px">Jobs</div></a>
-  <a href="/homeglitz/cleaner/payments.html"><i class="fa-solid fa-wallet"></i><div style="font-size:12px">Payments</div></a>
-  <a href="/homeglitz/others/coming-soon.html"><i class="fa-solid fa-gear"></i><div style="font-size:12px">Account</div></a>
+  <a href="/cleaner/payments"><i class="fa-solid fa-wallet"></i><div style="font-size:12px">Payments</div></a>
+  <a href="/others/coming-soon"><i class="fa-solid fa-gear"></i><div style="font-size:12px">Account</div></a>
 </nav>
 
 <!-- Toast container -->
@@ -664,7 +664,7 @@
    CONFIG - set your worker
    =========================== */
 const PROXY_BASE = "https://homeglitz.raphaellevinders.workers.dev/"; // <- keep as-is or update
-const tokenKey = 'homeglitz_cleaner_token';
+const tokenKey = 'airglitz_cleaner_token';
 let AUTO_PAUSE = false;
 
 
@@ -757,7 +757,7 @@ let token = localStorage.getItem(tokenKey);
 /* Redirect to login helper */
 function redirectToLogin() {
   localStorage.removeItem(tokenKey);
-  window.location.href = '/homeglitz/cleaner/login.html';
+  window.location.href = '/cleaner/login';
 }
 
 /* ---------------------------
@@ -1226,9 +1226,9 @@ function applyFilters() {
    --------------------------- */
 btnLogout.addEventListener('click', () => {
   localStorage.removeItem(tokenKey);
-  localStorage.removeItem('homeglitz_cleaner_id');
-  localStorage.removeItem('homeglitz_cleaner_name');
-  window.location.href = '/homeglitz/cleaner/login.html';
+  localStorage.removeItem('airglitz_cleaner_id');
+  localStorage.removeItem('airglitz_cleaner_name');
+  window.location.href = '/cleaner/login';
 });
 
 /* ---------------------------
@@ -1278,8 +1278,8 @@ function progressFinish() {
 (function boot(){
   // quick session check
   token = localStorage.getItem(tokenKey);
-  const cleanerName = localStorage.getItem('homeglitz_cleaner_name') || '';
-  const cleanerId = localStorage.getItem('homeglitz_cleaner_id') || '';
+  const cleanerName = localStorage.getItem('airglitz_cleaner_name') || '';
+  const cleanerId = localStorage.getItem('airglitz_cleaner_id') || '';
 if (!token || !cleanerId) return redirectToLogin();
 else {
   (async function(){
@@ -1292,7 +1292,7 @@ else {
   // fill header/profile
   cleanerNameTop.textContent = cleanerName;
   sideName.textContent = cleanerName || 'Cleaner';
-  sideEmail.textContent = localStorage.getItem('homeglitz_cleaner_email') || '';
+  sideEmail.textContent = localStorage.getItem('airglitz_cleaner_email') || '';
   navAvatar.textContent = (cleanerName || 'CL').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
   sideAvatar.textContent = navAvatar.textContent;
 
