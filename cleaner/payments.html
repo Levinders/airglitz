@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>HomeGlitz — Cleaner Payments</title>
+<title>AirGlitz — Cleaner Payments</title>
 
-<link rel="icon" href="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/64%C3%9764pxlogo.png"/>
+<link rel="icon" href="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -155,7 +155,7 @@ tr:hover td{background:#fbfdff}
 
 <header class="header">
   <div class="brand">
-    <img src="https://raw.githubusercontent.com/Levinders/homeglitz/refs/heads/main/mainlogog-removebg-preview.png">
+    <img src="https://raw.githubusercontent.com/Levinders/airglitz/refs/heads/main/logo_airglitz.png">
   </div>
 
   <div class="header-right">
@@ -238,9 +238,9 @@ tr:hover td{background:#fbfdff}
       </div>
 
       <nav>
-        <a href="/homeglitz/cleaner/portal.html"><i class="fa-solid fa-list-check"></i> My Jobs</a>
+        <a href="/cleaner/portal"><i class="fa-solid fa-list-check"></i> My Jobs</a>
         <a class="active"><i class="fa-solid fa-wallet"></i> Payments</a>
-        <a href="/homeglitz/others/coming-soon.html"><i class="fa-solid fa-gear"></i> Account</a>
+        <a href="/others/coming-soon"><i class="fa-solid fa-gear"></i> Account</a>
       </nav>
     </aside>
 
@@ -248,21 +248,21 @@ tr:hover td{background:#fbfdff}
 </main>
 
 <nav class="bottom-nav">
-  <a href="/homeglitz/cleaner/portal.html"><i class="fa-solid fa-list-check"></i><div style="font-size:12px">Jobs</div></a>
+  <a href="/cleaner/portal"><i class="fa-solid fa-list-check"></i><div style="font-size:12px">Jobs</div></a>
   <a class="active"><i class="fa-solid fa-wallet"></i><div style="font-size:12px">Payments</div></a>
-  <a href="/homeglitz/others/coming-soon.html"><i class="fa-solid fa-gear"></i><div style="font-size:12px">Account</div></a>
+  <a href="/others/coming-soon"><i class="fa-solid fa-gear"></i><div style="font-size:12px">Account</div></a>
 </nav>
 
 <script>
 const API = "https://homeglitz.raphaellevinders.workers.dev/";
 
-let token      = localStorage.getItem("homeglitz_cleaner_token");
-let cleanerId  = localStorage.getItem("homeglitz_cleaner_id");
-let name       = localStorage.getItem("homeglitz_cleaner_name");
-let email      = localStorage.getItem("homeglitz_cleaner_email");
+let token      = localStorage.getItem("airglitz_cleaner_token");
+let cleanerId  = localStorage.getItem("airglitz_cleaner_id");
+let name       = localStorage.getItem("airglitz_cleaner_name");
+let email      = localStorage.getItem("airglitz_cleaner_email");
 
 if(!token || !cleanerId){
-  location.href = "/homeglitz/cleaner/login.html";
+  location.href = "/cleaner/login";
 }
 
 document.getElementById("cleanerNameTop").textContent = name || "";
@@ -272,7 +272,7 @@ document.getElementById("sideAvatar").textContent = (name||"CL").split(" ").map(
 
 document.getElementById("btnLogout").onclick = () => {
   localStorage.clear();
-  location.href="/homeglitz/cleaner/login.html";
+  location.href="/cleaner/login";
 };
 
 function progressStart(){
