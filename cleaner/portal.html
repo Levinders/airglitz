@@ -346,6 +346,20 @@
     padding: 4px 8px !important;
   }
 
+    .status-badge {
+  opacity: 0.45;
+}
+
+.status-badge.active {
+  opacity: 1;
+}
+
+.status-badge.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+
   /* COUNTERS */
   .chip {
     font-size: 12px;
@@ -975,9 +989,13 @@ if (prop && hasInventory) {
 
 
 
-  document.querySelectorAll('.status-badge[data-status]').forEach(b => {
-    b.style.opacity = (b.getAttribute('data-status') === (row['Status'] || 'Pending')) ? '1' : '0.45';
-  });
+document.querySelectorAll('.status-badge[data-status]').forEach(b => {
+  b.classList.toggle(
+    'active',
+    b.getAttribute('data-status') === (row['Status'] || 'Pending')
+  );
+});
+
   CURRENT._newStatus = row['Status'] || 'Pending';
 
 const paymentStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
@@ -1093,23 +1111,23 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
     if (!CURRENT) return;
 
     // Visually highlight selected
-    document.querySelectorAll('.status-badge[data-status]').forEach(b => b.style.opacity = 0.45);
-    btn.style.opacity = 1;
+document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!CURRENT) return;
+    if (btn.classList.contains('disabled')) return;
+
+    document
+      .querySelectorAll('.status-badge[data-status]')
+      .forEach(b => b.classList.remove('active'));
+
+    btn.classList.add('active');
 
     const newStatus = btn.getAttribute('data-status');
     CURRENT._newStatus = newStatus;
     CURRENT.Status = newStatus;
-
-    const paymentStatusRaw = (CURRENT['Payment Status'] || '').trim().toLowerCase();
-    const alreadyRequested =
-      paymentStatusRaw === 'pending' ||
-      paymentStatusRaw === 'approved' ||
-      paymentStatusRaw === 'paid';
-
-    // Enable only when status becomes Completed
-    setPaymentEnabled(newStatus === 'Completed');
   });
 });
+
 
 
 
@@ -1228,8 +1246,9 @@ document
   .querySelectorAll('.status-badge[data-status]')
   .forEach(b => {
     b.classList.add('disabled');
-    b.style.pointerEvents = 'none';
-    b.style.opacity = '0.4';
+b.classList.add('disabled');
+b.classList.remove('active');
+
   });
 
 // Disable save status
