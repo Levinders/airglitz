@@ -705,6 +705,23 @@ function formatDateCell(v) {
 }
 
 
+
+  function lockJobUI() {
+  btnRequestPayment.classList.add('disabled');
+  btnRequestPayment.disabled = true;
+
+  btnSaveStatus.classList.add('disabled');
+  btnSaveStatus.disabled = true;
+
+  document
+    .querySelectorAll('.status-badge[data-status]')
+    .forEach(b => {
+      b.classList.add('disabled');
+      b.style.pointerEvents = 'none';
+      b.style.opacity = '0.4';
+    });
+}
+
   
 
 /* ---------------------------
@@ -1000,22 +1017,10 @@ const alreadyRequested =
   paymentStatusRaw === 'approved' ||
   paymentStatusRaw === 'paid';
 
-  if (alreadyRequested) {
-  // 🔒 Lock UI if payment already requested
-  btnRequestPayment.classList.add('disabled');
-  btnRequestPayment.disabled = true;
-
-  btnSaveStatus.classList.add('disabled');
-  btnSaveStatus.disabled = true;
-
-  document
-    .querySelectorAll('.status-badge[data-status]')
-    .forEach(b => {
-      b.classList.add('disabled');
-      b.style.pointerEvents = 'none';
-      b.style.opacity = '0.4';
-    });
+if (alreadyRequested) {
+  lockJobUI();
 }
+
 
 
   /* ============================================================
@@ -1065,10 +1070,8 @@ const isCompleted = (row['Status'] || '') === 'Completed';
     body.insertBefore(notice, paymentSection);
 
     // Disable both buttons when already requested
-    btnSaveStatus.classList.add('disabled');
-    btnSaveStatus.disabled = true;
-    btnRequestPayment.classList.add('disabled');
-    btnRequestPayment.disabled = true;
+lockJobUI();
+
   } else {
     // Ensure buttons are enabled when no payment exists
     btnSaveStatus.classList.remove('disabled');
@@ -1113,7 +1116,6 @@ document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
 
     const newStatus = btn.getAttribute('data-status');
     CURRENT._newStatus = newStatus;
-    CURRENT.Status = newStatus;
   });
 });
 
@@ -1182,13 +1184,19 @@ setTimeout(async () => {
     showToast('Network error — could not save', {duration:3500});
   } finally {
     removeSpinner(btnSaveStatus);
-    btnSaveStatus.classList.remove('disabled');
   }
 });
 
 
   btnRequestPayment.addEventListener('click', async () => {
   if (!CURRENT) return;
+
+
+    if ((CURRENT._newStatus || CURRENT.Status) !== 'Completed') {
+    showToast('Job must be marked Completed before requesting payment', { duration: 3200 });
+    return;
+  }
+
 
   const amountRaw = dwRequestAmount.value.trim();
   if (!amountRaw || isNaN(Number(amountRaw))) {
@@ -1226,23 +1234,8 @@ setTimeout(async () => {
 CURRENT['Payment Status'] = 'Pending';
 CURRENT._paymentLocked = true;
 
-// Disable payment button
-btnRequestPayment.classList.add('disabled');
-btnRequestPayment.disabled = true;
+lockJobUI();
 
-// Disable status changes
-document
-  .querySelectorAll('.status-badge[data-status]')
-  .forEach(b => {
-    b.classList.add('disabled');
-b.classList.add('disabled');
-b.classList.remove('active');
-
-  });
-
-// Disable save status
-btnSaveStatus.classList.add('disabled');
-btnSaveStatus.disabled = true;
 
 
     setTimeout(loadTasks, 700);
@@ -1250,10 +1243,10 @@ btnSaveStatus.disabled = true;
   } catch (err) {
     console.error(err);
     showToast('Network error — could not send request', { duration: 3500 });
-  } finally {
-    removeSpinner(btnRequestPayment);
-    btnRequestPayment.classList.remove('disabled');
-  }
+} finally {
+  removeSpinner(btnRequestPayment);
+}
+
 });
 
 
