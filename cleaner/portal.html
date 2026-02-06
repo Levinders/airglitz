@@ -35,6 +35,22 @@
   .header-right{display:flex;gap:12px;align-items:center}
   .avatar{width:40px;height:40px;border-radius:10px;background:#f0f6fb;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary)}
 
+    /* STATUS BADGES SMALLER */
+  .status-badge {
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+    opacity: 0.45;
+}
+
+.status-badge.active {
+  opacity: 1;
+}
+
+.status-badge.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+  
   /* Layout */
   .page {max-width:var(--max-w);margin:20px auto;padding:0 16px}
   .grid {display:grid;grid-template-columns: 1fr 320px;gap:18px}
@@ -339,26 +355,6 @@
     font-size: 12px;
     border-radius: 8px;
   }
-
-  /* STATUS BADGES SMALLER */
-  .status-badge {
-    font-size: 12px !important;
-    padding: 4px 8px !important;
-  }
-
-    .status-badge {
-  opacity: 0.45;
-}
-
-.status-badge.active {
-  opacity: 1;
-}
-
-.status-badge.disabled {
-  opacity: 0.35;
-  pointer-events: none;
-}
-
 
   /* COUNTERS */
   .chip {
@@ -1101,16 +1097,9 @@ function setPaymentEnabled(enabled) {
   btnRequestPayment.classList.remove('disabled');
 }
 
-
 /* ---------------------------
    Status click handlers (in drawer)
    --------------------------- */
-document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
-  btn.addEventListener('click', () => {
-
-    if (!CURRENT) return;
-
-    // Visually highlight selected
 document.querySelectorAll('.status-badge[data-status]').forEach(btn => {
   btn.addEventListener('click', () => {
     if (!CURRENT) return;
