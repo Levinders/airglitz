@@ -986,6 +986,24 @@ const alreadyRequested =
   paymentStatusRaw === 'approved' ||
   paymentStatusRaw === 'paid';
 
+  if (alreadyRequested) {
+  // 🔒 Lock UI if payment already requested
+  btnRequestPayment.classList.add('disabled');
+  btnRequestPayment.disabled = true;
+
+  btnSaveStatus.classList.add('disabled');
+  btnSaveStatus.disabled = true;
+
+  document
+    .querySelectorAll('.status-badge[data-status]')
+    .forEach(b => {
+      b.classList.add('disabled');
+      b.style.pointerEvents = 'none';
+      b.style.opacity = '0.4';
+    });
+}
+
+
   /* ============================================================
    When job is Completed → Only Request Payment should show
    ============================================================ */
@@ -1102,6 +1120,18 @@ btnCloseDrawer.addEventListener('click', closeDrawer);
    Save status action
    --------------------------- */
 btnSaveStatus.addEventListener('click', async () => {
+
+  if (
+  CURRENT &&
+  ['pending','approved','paid'].includes(
+    String(CURRENT['Payment Status'] || '').toLowerCase()
+  )
+) {
+  showToast('Status locked — payment already requested', { duration: 3000 });
+  return;
+}
+
+  
   if (!CURRENT) return;
   const newStatus = CURRENT._newStatus || CURRENT['Status'] || 'Pending';
   const notes = dwNotes.value || '';
@@ -1185,10 +1215,27 @@ setTimeout(async () => {
 
     showToast('Payment request sent', { duration: 3500 });
 
-    CURRENT['Payment Status'] = 'Pending';
+// 🔒 Lock job after payment request
+CURRENT['Payment Status'] = 'Pending';
+CURRENT._paymentLocked = true;
 
-    // DO NOT disable — allow multiple if needed
-    btnRequestPayment.classList.remove('disabled');
+// Disable payment button
+btnRequestPayment.classList.add('disabled');
+btnRequestPayment.disabled = true;
+
+// Disable status changes
+document
+  .querySelectorAll('.status-badge[data-status]')
+  .forEach(b => {
+    b.classList.add('disabled');
+    b.style.pointerEvents = 'none';
+    b.style.opacity = '0.4';
+  });
+
+// Disable save status
+btnSaveStatus.classList.add('disabled');
+btnSaveStatus.disabled = true;
+
 
     setTimeout(loadTasks, 700);
     closeDrawer();
