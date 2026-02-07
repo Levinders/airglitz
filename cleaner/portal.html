@@ -979,6 +979,23 @@ function openDrawer(bookingId) {
   if (!row) return showToast('Job not found', {duration:2000});
   CURRENT = row;
 
+  (async () => {
+  const res = await fetchApi({
+    action: 'getCleanerPayments',
+    token
+  });
+
+  if (res.success && Array.isArray(res.payments)) {
+    const match = res.payments.find(
+      p => p['Booking ID'] === bookingId
+    );
+    if (match) {
+      dwRequestAmount.value = match.Amount || '';
+    }
+  }
+})();
+
+
   // 🔓 Reset UI state for new job
   unlockJobUI();
 
@@ -1157,7 +1174,11 @@ btnSaveStatus.addEventListener('click', async () => {
     String(CURRENT['Payment Status'] || '').toLowerCase()
   )
 ) {
-  showToast('Status locked — payment already requested', { duration: 3000 });
+  showToast(
+  'This job is locked because a payment request was submitted. Contact admin to make changes.',
+  { duration: 4000 }
+);
+
   return;
 }
 
