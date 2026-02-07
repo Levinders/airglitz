@@ -35,12 +35,23 @@
   .header-right{display:flex;gap:12px;align-items:center}
   .avatar{width:40px;height:40px;border-radius:10px;background:#f0f6fb;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary)}
 
-    /* STATUS BADGES SMALLER */
-  .status-badge {
-    font-size: 12px !important;
-    padding: 4px 8px !important;
-    opacity: 0.45;
+/* Default: full opacity everywhere */
+.status-badge {
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  opacity: 1;
 }
+
+/* Drawer-only dimming */
+.drawer .status-badge {
+  opacity: 0.35;
+}
+
+/* Active status in drawer */
+.drawer .status-badge.active {
+  opacity: 1;
+}
+
 
 .status-badge.active {
   opacity: 1;
