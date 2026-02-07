@@ -1144,6 +1144,9 @@ btnSaveStatus.addEventListener('click', async () => {
 
   
   if (!CURRENT) return;
+
+  progressStart();
+  
   const newStatus = CURRENT._newStatus || CURRENT['Status'] || 'Pending';
   const notes = dwNotes.value || '';
   // show processing
@@ -1206,6 +1209,8 @@ setTimeout(async () => {
     return;
   }
 
+  progressStart();
+    
   const amount = Number(amountRaw);
 
   // No restrictions — always allow
