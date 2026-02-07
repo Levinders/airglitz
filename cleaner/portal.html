@@ -1074,9 +1074,7 @@ lockJobUI();
 
   } else {
     // Ensure buttons are enabled when no payment exists
-    btnSaveStatus.classList.remove('disabled');
     btnSaveStatus.disabled = false;
-    btnRequestPayment.classList.remove('disabled');
     btnRequestPayment.disabled = false;
   }
 })();
@@ -1225,8 +1223,6 @@ setTimeout(async () => {
 
 // 🔒 Lock job after payment request
 CURRENT['Payment Status'] = 'Pending';
-CURRENT._paymentLocked = true;
-
 lockJobUI();
 
 
