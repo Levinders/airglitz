@@ -42,9 +42,8 @@
   opacity: 1;
 }
 
-/* Drawer-only dimming */
-.drawer .status-badge {
-  opacity: 0.35;
+.drawer .status-badge:not(.active):not(.disabled) {
+  opacity: 0.6;
 }
 
 /* Active status in drawer */
