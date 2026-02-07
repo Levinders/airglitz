@@ -1104,10 +1104,9 @@ const isCompleted = (row['Status'] || '') === 'Completed';
 lockJobUI();
 
   } else {
-    // Ensure buttons are enabled when no payment exists
-    btnSaveStatus.disabled = false;
-    btnRequestPayment.disabled = false;
-  }
+  unlockJobUI(); // 🔓 fully restore interactivity
+}
+
 })();
 
   document.getElementById('dwNotes').focus();
