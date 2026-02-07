@@ -733,6 +733,23 @@ function formatDateCell(v) {
     });
 }
 
+
+  function unlockJobUI() {
+  btnRequestPayment.classList.remove('disabled');
+  btnRequestPayment.disabled = false;
+
+  btnSaveStatus.classList.remove('disabled');
+  btnSaveStatus.disabled = false;
+
+  document
+    .querySelectorAll('.status-badge[data-status]')
+    .forEach(b => {
+      b.classList.remove('disabled');
+      b.style.pointerEvents = '';
+      b.style.opacity = '';
+    });
+}
+
   
 
 /* ---------------------------
@@ -962,6 +979,10 @@ function openDrawer(bookingId) {
   const row = JOBS.find(r => (r['Booking ID']||'') === bookingId);
   if (!row) return showToast('Job not found', {duration:2000});
   CURRENT = row;
+
+  // 🔓 Reset UI state for new job
+  unlockJobUI();
+
 
   dwBookingId.textContent = bookingId;
   dwPropName.textContent = row['Property Name'] || '';
