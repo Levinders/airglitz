@@ -1059,18 +1059,6 @@ document.querySelectorAll('.status-badge[data-status]').forEach(b => {
 
   CURRENT._newStatus = row['Status'] || 'Pending';
 
-const paymentStatusRaw = (row['Payment Status'] || '').trim().toLowerCase();
-const alreadyRequested =
-  paymentStatusRaw === 'pending' ||
-  paymentStatusRaw === 'approved' ||
-  paymentStatusRaw === 'paid';
-
-if (alreadyRequested) {
-  lockJobUI();
-}
-
-
-
   /* ============================================================
    When job is Completed → Only Request Payment should show
    ============================================================ */
@@ -1167,21 +1155,6 @@ btnCloseDrawer.addEventListener('click', closeDrawer);
    Save status action
    --------------------------- */
 btnSaveStatus.addEventListener('click', async () => {
-
-  if (
-  CURRENT &&
-  ['pending','approved','paid'].includes(
-    String(CURRENT['Payment Status'] || '').toLowerCase()
-  )
-) {
-  showToast(
-  'This job is locked because a payment request was submitted. Contact admin to make changes.',
-  { duration: 4000 }
-);
-
-  return;
-}
-
   
   if (!CURRENT) return;
 
