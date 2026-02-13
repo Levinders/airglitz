@@ -1134,7 +1134,7 @@ async function approveFlow(mode) {
     return;
   }
 
-const newStatus = document.getElementById('dwStatus').value.trim() || 'Pending';
+const finalStatus = document.getElementById('dwStatus').value.trim() || 'Pending';
 
 const payload = {
   action: 'adminApprovePayment',
@@ -1142,7 +1142,7 @@ const payload = {
   approvedAmount,
   adminNote,
   approver,
-  status: mode === 'paid' ? 'Paid' : newStatus   // ✅ forces “Paid” for the Paid + Invoice button
+  status: mode === 'paid' ? 'Paid' : finalStatus   // ✅ forces “Paid” for the Paid + Invoice button
 };
 
 
@@ -1167,10 +1167,13 @@ const payload = {
     }
 
     // ✅ Update local CURRENT + ALL immediately (UI sync)
-    CURRENT['Amount'] = approvedAmount;
-    CURRENT['Approved Amount'] = approvedAmount;
-    CURRENT['Admin Note'] = adminNote;
-    CURRENT['Status'] = newStatus;
+const finalStatus = mode === 'paid' ? 'Paid' : finalStatus;
+
+CURRENT['Amount'] = approvedAmount;
+CURRENT['Approved Amount'] = approvedAmount;
+CURRENT['Admin Note'] = adminNote;
+CURRENT['Status'] = finalStatus;
+
 
     // ✅ Update table without full reload
     const row = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(4)`);
@@ -1180,16 +1183,16 @@ const payload = {
 const statusBadge = document.querySelector(`tr[data-req="${requestId}"] td:nth-child(6) .status-badge`);
 if (statusBadge) {
   const cls =
-    newStatus === 'Paid'
+    finalStatus === 'Paid'
       ? 's-paid'
-      : newStatus === 'Approved'
+      : finalStatus === 'Approved'
       ? 's-approved'
-      : newStatus === 'Pending'
+      : finalStatus === 'Pending'
       ? 's-pending'
       : 's-approved'; // fallback for Cancelled or others
   statusBadge.className = `status-badge ${cls}`;
-  statusBadge.textContent = newStatus;
-  dwStatus.value = newStatus;
+  statusBadge.textContent = finalStatus;
+  dwStatus.value = finalStatus;
 
 }
 
